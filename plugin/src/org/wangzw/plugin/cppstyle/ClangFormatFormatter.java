@@ -35,6 +35,7 @@ import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.wangzw.plugin.cppstyle.diff_match_patch.Diff;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
@@ -87,7 +88,7 @@ public class ClangFormatFormatter extends CodeFormatter {
 		return retval != null ? retval : new MultiTextEdit();
 	}
 
-	public void formatAndApply(ICEditor editor) {
+	public void formatAndApply(ITextEditor editor) {
 		IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 
 		String path = ((IFileEditorInput) editor.getEditorInput()).getFile().getLocation().toOSString();

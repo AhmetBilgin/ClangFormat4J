@@ -18,6 +18,21 @@
       </handler>
    </extension>
    <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.eclipse.ui.file.save"
+            class="org.wangzw.plugin.cppstyle.ui.CppStyleHandler">
+            <activeWhen>
+               <with
+                     variable="activeEditor">
+                  <instanceof
+                        value="org.eclipse.jdt.internal.ui.javaeditor.JavaEditor">
+                  </instanceof>
+               </with>
+            </activeWhen>
+         </handler>
+   </extension>
+   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="CppStyle"

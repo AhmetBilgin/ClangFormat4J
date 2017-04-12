@@ -17,6 +17,7 @@ import org.eclipse.ui.internal.InternalHandlerUtil;
 import org.eclipse.ui.internal.SaveableHelper;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.handlers.AbstractSaveHandler;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.wangzw.plugin.cppstyle.ClangFormatFormatter;
 
 /**
@@ -33,12 +34,11 @@ public class CppStyleHandler extends AbstractSaveHandler {
 		registerEnablement();
 	}
 
-	protected ICEditor getSaveableEditor(ExecutionEvent event) {
-
+	protected ITextEditor getSaveableEditor(ExecutionEvent event) {
 		IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
 
-		if (activePart instanceof ICEditor) {
-			return (ICEditor) activePart;
+		if (activePart instanceof ITextEditor) {
+			return (ITextEditor) activePart;
 		}
 
 		return null;
@@ -50,7 +50,7 @@ public class CppStyleHandler extends AbstractSaveHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ICEditor editor = getSaveableEditor(event);
+		ITextEditor editor = getSaveableEditor(event);
 
 		if (editor == null) {
 			return null;
