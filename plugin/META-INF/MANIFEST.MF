@@ -8,9 +8,7 @@ Bundle-Vendor: Zhanwei Wang
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.cdt.core,
  org.eclipse.text,
- org.eclipse.cdt.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors,
  org.eclipse.ui.workbench,
@@ -19,8 +17,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.ui,
  org.eclipse.jface.text,
  org.eclipse.core.expressions,
- org.eclipse.cdt.codan.core,
- org.eclipse.cdt.codan.core.cxx,
  org.eclipse.core.filesystem
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
