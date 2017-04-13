@@ -25,8 +25,6 @@ import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStylePerfPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	private FileFieldEditor clangFormatPath = null;
-	private FileFieldEditor cpplintPath = null;
-	private BooleanFieldEditor enableCpplintOnSave = null;
 	private BooleanFieldEditor enableClangFormatOnSave = null;
 
 	public CppStylePerfPage() {
@@ -44,19 +42,6 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements IWork
 				getFieldEditorParent());
 
 		addField(clangFormatPath);
-
-		cpplintPath = new FileFieldEditor(CppStyleConstants.CPPLINT_PATH, "Cpplint path:", getFieldEditorParent());
-
-		addField(cpplintPath);
-
-		enableCpplintOnSave = new BooleanFieldEditor(CppStyleConstants.ENABLE_CPPLINT_ON_SAVE,
-				CppStyleConstants.ENABLE_CPPLINT_TEXT, getFieldEditorParent());
-
-		if (!checkPathExist(CppStyle.getCpplintPath())) {
-			enableCpplintOnSave.setEnabled(false, getFieldEditorParent());
-		}
-
-		addField(enableCpplintOnSave);
 
 		enableClangFormatOnSave = new BooleanFieldEditor(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE,
 				CppStyleConstants.ENABLE_CLANGFORMAT_TEXT, getFieldEditorParent());
@@ -78,8 +63,6 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements IWork
 		if (event.getProperty().equals(FieldEditor.VALUE)) {
 			if (event.getSource() == clangFormatPath) {
 				clangFormatPathChange(event.getNewValue().toString());
-			} else if (event.getSource() == cpplintPath) {
-				cpplintPathChange(event.getNewValue().toString());
 			}
 
 			checkState();
@@ -98,18 +81,6 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements IWork
 			this.setErrorMessage("Clang-format path \"" + newPath + "\" does not exist");
 		} else {
 			enableClangFormatOnSave.setEnabled(true, getFieldEditorParent());
-			this.setValid(true);
-			this.setErrorMessage(null);
-		}
-	}
-
-	private void cpplintPathChange(String newPath) {
-		if (!checkPathExist(newPath)) {
-			enableCpplintOnSave.setEnabled(false, getFieldEditorParent());
-			this.setValid(false);
-			this.setErrorMessage("Cpplint path \"" + newPath + "\" does not exist");
-		} else {
-			enableCpplintOnSave.setEnabled(true, getFieldEditorParent());
 			this.setValid(true);
 			this.setErrorMessage(null);
 		}

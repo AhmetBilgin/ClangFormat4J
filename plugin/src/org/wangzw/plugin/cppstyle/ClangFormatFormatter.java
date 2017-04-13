@@ -10,12 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.CCorePlugin;
-import org.eclipse.cdt.core.formatter.CodeFormatter;
-import org.eclipse.cdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.cdt.core.model.CoreModel;
-import org.eclipse.cdt.core.model.ITranslationUnit;
-import org.eclipse.cdt.ui.ICEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -40,7 +34,7 @@ import org.wangzw.plugin.cppstyle.diff_match_patch.Diff;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
-public class ClangFormatFormatter extends CodeFormatter {
+public class ClangFormatFormatter {
 	private MessageConsoleStream err = null;
 	private Map<String, ?> options;
 
@@ -48,44 +42,6 @@ public class ClangFormatFormatter extends CodeFormatter {
 		super();
 		CppStyleMessageConsole console = CppStyle.buildConsole();
 		err = console.getErrorStream();
-	}
-
-	@Override
-	public String createIndentationString(int indentationLevel) {
-		return super.createIndentationString(indentationLevel);
-	}
-
-	@Override
-	public void setOptions(Map<String, ?> options) {
-		if (options != null) {
-			this.options = options;
-		} else {
-			this.options = CCorePlugin.getOptions();
-		}
-	}
-
-	private String getSourceFilePath() {
-		ITranslationUnit tu = (ITranslationUnit) options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
-
-		if (tu == null) {
-			IFile file = (IFile) options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-			if (file != null) {
-				tu = (ITranslationUnit) CoreModel.getDefault().create(file);
-			}
-		}
-
-		if (tu != null) {
-			return tu.getResource().getRawLocation().toOSString();
-		} else {
-			String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-			return new File(root, "a.cc").getAbsolutePath();
-		}
-	}
-
-	@Override
-	public TextEdit format(int kind, String source, int offset, int length, int arg4, String lineSeparator) {
-		TextEdit retval = format(source, getSourceFilePath(), new Region(offset, length));
-		return retval != null ? retval : new MultiTextEdit();
 	}
 
 	public void formatAndApply(ITextEditor editor) {
