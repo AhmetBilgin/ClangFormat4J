@@ -80,7 +80,8 @@ public class ClangFormatFormatter {
 			err.println(
 					"Cannot find .clang-format or _clang-format configuration file under any level "
 							+ "parent directories of path (" + path + ").");
-			err.println("Clang-format will default to Google style.");
+			err.println("Not applying any formatting.");
+			return null;
 		}
 
 		// make clang-format do its own search for the configuration, but fall back to Google.
