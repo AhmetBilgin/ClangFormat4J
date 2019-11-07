@@ -163,20 +163,17 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 		ISelection selection = selectionService.getSelection();
 
-		IProject project = null;
 		if (selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection)
-					.getFirstElement();
-
+			Object element = ((IStructuredSelection) selection).getFirstElement();
+			IProject project = null;		
 			if (element instanceof IResource) {
 				project = ((IResource) element).getProject();
 			}
+			
+			if (project != null) {
+				return project.getLocation().toOSString();
+			}
 		}
-
-		if (project != null) {
-			return project.getLocation().toOSString();
-		}
-
 		return null;
 	}
 

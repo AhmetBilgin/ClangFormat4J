@@ -1,7 +1,7 @@
 CppStyle
 ========================
 [![Build Status](https://travis-ci.org/wangzw/CppStyle.svg?branch=master)](https://travis-ci.org/wangzw/CppStyle)
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883" class="drag" title="Drag to your running Eclipse workspace to install CppStyle"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install CppStyle" height="20" width="80" /></a>
+[![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883 "Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
 **An Eclipse plugin that integrates the clang-format tool as an alternative C/C++ code formatter and checks C++ coding style with the cpplint.py tool.**
 
@@ -12,15 +12,15 @@ The expected behavious is that people just format the code fragment by first sel
 
 There are many C/C++ code format tools such as "[astyle](http://astyle.sourceforge.net/)" but currently **"[clang-format](http://clang.llvm.org/docs/ClangFormat.html)"** is my favorite. It has several pre-defined styles and is highly configurable.
 
-**[cpplint.py](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint)** is a C++ coding style checker provided by google. It can be used to check the C++ code against the [Google C++ coding style](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html). It can detect many style errors and maintain the consistency of coding style.
+**[cpplint.py](https://google.github.io/styleguide/cppguide.html#cpplint)** is a C++ coding style checker provided by google. It can be used to check the C++ code against the [Google C++ coding style](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html). It can detect many style errors and maintain the consistency of coding style.
 
 ## Requirement
-    cpplint.py     http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint
+    cpplint.py     https://google.github.io/styleguide/cppguide.html#cpplint
     clang-format   http://clang.llvm.org/docs/ClangFormat.html
 
 ### Install cpplint.py on Linux/MacOS
 
-    sudo curl -L "http://google-styleguide.googlecode.com/svn/trunk/cpplint/cpplint.py" -o /usr/bin/cpplint.py
+    sudo curl -L "https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py" -o /usr/bin/cpplint.py
     sudo chmod a+x /usr/bin/cpplint.py
 
 ### Install clang-format on Linux/MacOS
@@ -39,7 +39,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 ### Install from Eclipse Marketplace (Recommend)
 
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883" class="drag" title="Drag to your running Eclipse workspace to install CppStyle"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install CppStyle" /></a>
+[![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883 "Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
 **Drag the above button to your running Eclipse workspace**
 
@@ -49,6 +49,8 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 CppStyle can be installed like other eclipse plugins from this site.
 
+    http://www.cppstyle.com/update (Latest)
+    http://www.cppstyle.com/oxygen (Eclipse Oxygen)
     http://www.cppstyle.com/mars (Eclipse Mars)
     http://www.cppstyle.com/luna (Eclipse Luna)
     http://www.cppstyle.com/kepler (Eclipse Kepler)
@@ -57,6 +59,12 @@ Go to **Help -> Install New Software** page, click **Add** button and then enter
 
 Select **CppStyle** from drop-down list and then check the name **CppStyle** listed in the page. And then click **Next** and **OK** until restart.
 
+### Manual
+
+* Build CppStye with maven first. ```mvn clean package```
+* Install CppStyle with local update site ```file:///<YOUR_CODE_PATH>/update/target/site```
+
+Restart Eclipse.
 
 ## Configure CppStyle
 
