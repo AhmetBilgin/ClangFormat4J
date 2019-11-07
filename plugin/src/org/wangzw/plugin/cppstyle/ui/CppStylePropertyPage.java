@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.Workbench;
-import org.wangzw.plugin.cppstyle.CpplintCheckSettings;
 
 public class CppStylePropertyPage extends PropertyPage implements
 		SelectionListener, IPropertyChangeListener, ModifyListener {
@@ -117,7 +116,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 				this.setErrorMessage("Directory or its up level directories should contain .git, .hg, or .svn.");
 
-				String path = CpplintCheckSettings.getVersionControlRoot(file);
+				String path = "";//CpplintCheckSettings.getVersionControlRoot(file);
 
 				if (path == null) {
 					return false;
