@@ -3,12 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>cppstyle-group</groupId>
-    <artifactId>cppstyle</artifactId>
+    <groupId>clang-format4j</groupId>
+    <artifactId>clang-format4j-parent</artifactId>
     <version>1.5.0.0</version>
   </parent>
-  <groupId>cppstyle-group</groupId>
-  <artifactId>org.wangzw.cppstyle.feature</artifactId>
-  <version>1.5.0.0</version>
+  <artifactId>org.wangzw.clang-format4j.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 </project>

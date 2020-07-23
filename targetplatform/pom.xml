@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>clang-format4j</groupId>
+		<artifactId>clang-format4j-parent</artifactId>
+		<version>1.5.0.0</version>
+	</parent>
+
+	<name>targetplatform</name>
+	<artifactId>targetplatform</artifactId>
+	<packaging>eclipse-target-definition</packaging>
+	<version>4.12</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+</project>

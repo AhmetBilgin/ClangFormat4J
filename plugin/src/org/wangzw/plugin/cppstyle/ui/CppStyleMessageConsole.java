@@ -17,175 +17,185 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStyleMessageConsole extends MessageConsole {
-	private CppStyleConsolePage page = null;
-	private MessageConsoleStream out = new MessageConsoleStream(this);
-	private MessageConsoleStream err = new MessageConsoleStream(this);
+    private CppStyleConsolePage page = null;
 
-	private static class MarkerPosition extends Position {
-		private FileLink link = null;
+    private MessageConsoleStream out = new MessageConsoleStream(this);
 
-		public MarkerPosition(FileLink link, int offset, int length) {
-			super(offset, length);
-			this.link = link;
-		}
+    private MessageConsoleStream err = new MessageConsoleStream(this);
 
-		public FileLink getFileLink() {
-			return link;
-		}
-	}
+    private static class MarkerPosition extends Position {
+        private FileLink link = null;
 
-	public static final String ERROR_MARKER_CATEGORY = "org.wangzw.cppstyle.ERROR_MARKER_POSITION";;
-	private CppStyleConsolePatternMatchListener listener = null;
+        public MarkerPosition(FileLink link, int offset, int length) {
+            super(offset, length);
+            this.link = link;
+        }
 
-	public CppStyleMessageConsole(CppStyleConsolePatternMatchListener listener) {
-		super(CppStyleConstants.CONSOLE_NAME, null);
-		this.getDocument().addPositionCategory(ERROR_MARKER_CATEGORY);
-		this.listener = listener;
-		addPatternMatchListener(listener);
+        public FileLink getFileLink() {
+            return link;
+        }
+    }
 
-		runUI(new Runnable() {
+    public static final String ERROR_MARKER_CATEGORY = "org.wangzw.clang-format4j.ERROR_MARKER_POSITION";;
 
-			@Override
-			public void run() {
-				err.setColor(new Color(getStandardDisplay(), new RGB(255, 0, 0)));
-			};
-		});
-	}
+    private CppStyleConsolePatternMatchListener listener = null;
 
-	@Override
-	public IPageBookViewPage createPage(IConsoleView view) {
-		page = new CppStyleConsolePage(this, view);
-		return page;
-	}
+    public CppStyleMessageConsole(CppStyleConsolePatternMatchListener listener) {
+        super(CppStyleConstants.CONSOLE_NAME, null);
+        this.getDocument().addPositionCategory(ERROR_MARKER_CATEGORY);
+        this.listener = listener;
+        addPatternMatchListener(listener);
 
-	public CppStyleConsolePatternMatchListener getListener() {
-		return listener;
-	}
+        runUI(new Runnable() {
 
-	public void setListener(CppStyleConsolePatternMatchListener listener) {
-		removePatternMatchListener(this.listener);
-		addPatternMatchListener(listener);
-		this.listener = listener;
-	}
+            @Override
+            public void run() {
+                err.setColor(new Color(getStandardDisplay(), new RGB(255, 0, 0)));
+            };
+        });
+    }
 
-	public CppStyleConsolePage getActivePage() {
-		return page;
-	}
+    @Override
+    public IPageBookViewPage createPage(IConsoleView view) {
+        page = new CppStyleConsolePage(this, view);
+        return page;
+    }
 
-	public FileLink getFileLink(int offset) {
-		try {
-			IDocument document = getDocument();
-			if (document != null) {
-				Position[] positions = document.getPositions(ERROR_MARKER_CATEGORY);
-				Position position = findPosition(offset, positions);
-				if (position instanceof MarkerPosition) {
-					return ((MarkerPosition) position).getFileLink();
-				}
-			}
-		} catch (BadPositionCategoryException e) {
-		}
-		return null;
-	}
+    public CppStyleConsolePatternMatchListener getListener() {
+        return listener;
+    }
 
-	public void addFileLink(FileLink link, int offset, int length) {
-		IDocument document = getDocument();
-		MarkerPosition linkPosition = new MarkerPosition(link, offset, length);
-		try {
-			document.addPosition(ERROR_MARKER_CATEGORY, linkPosition);
-			IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
-			fConsoleManager.refresh(this);
-		} catch (BadPositionCategoryException e) {
-			CppStyle.log(e);
-		} catch (BadLocationException e) {
-			CppStyle.log(e);
-		}
-	}
+    public void setListener(CppStyleConsolePatternMatchListener listener) {
+        removePatternMatchListener(this.listener);
+        addPatternMatchListener(listener);
+        this.listener = listener;
+    }
 
-	/**
-	 * Binary search for the position at a given offset.
-	 *
-	 * @param offset
-	 *            the offset whose position should be found
-	 * @return the position containing the offset, or <code>null</code>
-	 */
-	private Position findPosition(int offset, Position[] positions) {
+    public CppStyleConsolePage getActivePage() {
+        return page;
+    }
 
-		if (positions.length == 0) {
-			return null;
-		}
+    public FileLink getFileLink(int offset) {
+        try {
+            IDocument document = getDocument();
+            if (document != null) {
+                Position[] positions = document.getPositions(ERROR_MARKER_CATEGORY);
+                Position position = findPosition(offset, positions);
+                if (position instanceof MarkerPosition) {
+                    return ((MarkerPosition)position).getFileLink();
+                }
+            }
+        }
+        catch (BadPositionCategoryException e) {
+        }
+        return null;
+    }
 
-		int left = 0;
-		int right = positions.length - 1;
-		int mid = 0;
-		Position position = null;
+    public void addFileLink(FileLink link, int offset, int length) {
+        IDocument document = getDocument();
+        MarkerPosition linkPosition = new MarkerPosition(link, offset, length);
+        try {
+            document.addPosition(ERROR_MARKER_CATEGORY, linkPosition);
+            IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
+            fConsoleManager.refresh(this);
+        }
+        catch (BadPositionCategoryException e) {
+            CppStyle.log(e);
+        }
+        catch (BadLocationException e) {
+            CppStyle.log(e);
+        }
+    }
 
-		while (left < right) {
+    /**
+     * Binary search for the position at a given offset.
+     *
+     * @param offset the offset whose position should be found
+     * @return the position containing the offset, or <code>null</code>
+     */
+    private Position findPosition(int offset, Position[] positions) {
 
-			mid = (left + right) / 2;
+        if (positions.length == 0) {
+            return null;
+        }
 
-			position = positions[mid];
-			if (offset < position.getOffset()) {
-				if (left == mid) {
-					right = left;
-				} else {
-					right = mid - 1;
-				}
-			} else if (offset > (position.getOffset() + position.getLength() - 1)) {
-				if (right == mid) {
-					left = right;
-				} else {
-					left = mid + 1;
-				}
-			} else {
-				left = right = mid;
-			}
-		}
+        int left = 0;
+        int right = positions.length - 1;
+        int mid = 0;
+        Position position = null;
 
-		position = positions[left];
-		if (offset >= position.getOffset() && (offset < (position.getOffset() + position.getLength()))) {
-			return position;
-		}
-		return null;
-	}
+        while (left < right) {
 
-	public MessageConsoleStream getOutputStream() {
-		out.setActivateOnWrite(page != null ? page.activeOnStdout() : true);
-		return out;
-	}
+            mid = (left + right) / 2;
 
-	public MessageConsoleStream getErrorStream() {
-		err.setActivateOnWrite(page != null ? page.activeOnStderr() : true);
-		return err;
-	}
+            position = positions[mid];
+            if (offset < position.getOffset()) {
+                if (left == mid) {
+                    right = left;
+                }
+                else {
+                    right = mid - 1;
+                }
+            }
+            else if (offset > (position.getOffset() + position.getLength() - 1)) {
+                if (right == mid) {
+                    left = right;
+                }
+                else {
+                    left = mid + 1;
+                }
+            }
+            else {
+                left = right = mid;
+            }
+        }
 
-	public static Display getStandardDisplay() {
-		Display display = Display.getCurrent();
-		if (display == null) {
-			display = Display.getDefault();
-		}
-		return display;
-	}
+        position = positions[left];
+        if (offset >= position.getOffset() && (offset < (position.getOffset() + position.getLength()))) {
+            return position;
+        }
+        return null;
+    }
 
-	private void runUI(Runnable run) {
-		Display display;
-		display = Display.getCurrent();
-		if (display == null) {
-			display = Display.getDefault();
-			display.syncExec(run);
-		} else {
-			run.run();
-		}
-	}
+    public MessageConsoleStream getOutputStream() {
+        out.setActivateOnWrite(page != null ? page.activeOnStdout() : true);
+        return out;
+    }
 
-	public void clear() {
-		runUI(new Runnable() {
+    public MessageConsoleStream getErrorStream() {
+        err.setActivateOnWrite(page != null ? page.activeOnStderr() : true);
+        return err;
+    }
 
-			@Override
-			public void run() {
-				IDocument document = getDocument();
-				document.set("");
-			};
-		});
+    public static Display getStandardDisplay() {
+        Display display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+        }
+        return display;
+    }
 
-	}
+    private void runUI(Runnable run) {
+        Display display;
+        display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+            display.syncExec(run);
+        }
+        else {
+            run.run();
+        }
+    }
+
+    public void clear() {
+        runUI(new Runnable() {
+
+            @Override
+            public void run() {
+                IDocument document = getDocument();
+                document.set("");
+            };
+        });
+
+    }
 }

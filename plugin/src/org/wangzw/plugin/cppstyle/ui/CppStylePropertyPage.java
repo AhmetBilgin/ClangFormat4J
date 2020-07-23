@@ -275,10 +275,10 @@ public class CppStylePropertyPage extends PropertyPage implements
 	 */
 	public void configureWorkspaceSettings() {
 		// create a new instance of the current class
-		IPreferencePage page = new CppStylePerfPage();
+		IPreferencePage page = new CppStylePreferencePage();
 		page.setTitle(getTitle());
 		// and show it
-		showPreferencePage(CppStyleConstants.PerfPageId, page);
+		showPreferencePage(CppStyleConstants.PREFERENCE_PAGE_ID, page);
 	}
 
 	/**

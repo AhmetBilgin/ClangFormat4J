@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            commandId="org.eclipse.ui.file.save"
-            class="org.wangzw.plugin.cppstyle.ui.CppStyleHandler">
-            <activeWhen>
-            <with
-                  variable="activeEditor">
-               <instanceof
-                     value="org.eclipse.cdt.ui.ICEditor">
-               </instanceof>
-            </with>
-         </activeWhen>
-      </handler>
-   </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
@@ -35,9 +19,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="CppStyle"
-            class="org.wangzw.plugin.cppstyle.ui.CppStylePerfPage"
-            id="org.wangzw.plugin.cppstyle.ui.CppStylePerfPage">
+            category="org.eclipse.jdt.ui.preferences.CodeStylePreferencePage"
+            class="org.wangzw.plugin.cppstyle.ui.CppStylePreferencePage"
+            id="org.wangzw.plugin.cppstyle.ui.CppStylePreferencePage"
+            name="ClangFormat4J">
       </page>
    </extension>
    <extension
@@ -45,5 +30,12 @@
       <initializer
             class="org.wangzw.plugin.cppstyle.ui.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension point="org.eclipse.jdt.core.javaFormatter">
+   		<javaFormatter
+	         name="ClangFormat4J"
+	         class="org.wangzw.plugin.cppstyle.ClangFormatFormatter"
+             id="org.wangzw.plugin.cppstyle.ClangFormatFormatter">
+   		</javaFormatter>
    </extension>
 </plugin>

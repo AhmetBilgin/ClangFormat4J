@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.wangzw.cppstyle.feature"
-      label="CppStyle"
+      id="org.wangzw.clang-format4j.feature"
+      label="ClangFormat4J"
       version="1.5.0.0"
       provider-name="Zhanwei Wang">
 
    <description>
-      Integrate clang-format as an alternative c/c++ code formater and check c++ code style with cpplint.py
+      Integrate clang-format as an alternative java code formater
    </description>
 
    <copyright>
@@ -38,11 +38,11 @@ SOFTWARE.
    </license>
 
    <url>
-      <update label="CppStyle" url="http://www.cppstyle.com/update"/>
+      <update label="ClangFormat4J" url="http://www.cppstyle.com/update"/>
    </url>
 
    <plugin
-         id="org.wangzw.cppstyle"
+         id="org.wangzw.clang-format4j"
          download-size="0"
          install-size="0"
          version="1.5.0.0"

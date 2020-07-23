@@ -3,10 +3,10 @@ CppStyle
 [![Build Status](https://travis-ci.org/wangzw/CppStyle.svg?branch=master)](https://travis-ci.org/wangzw/CppStyle)
 [![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883 "Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
-**An Eclipse plugin that integrates the clang-format tool as an alternative C/C++ code formatter and checks C++ coding style with the cpplint.py tool.**
+**An Eclipse plugin that integrates the clang-format tool as an alternative Java code formatter tool.**
 
 ## Description
-A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a C/C++ IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating. 
+A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a C/C++ IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating.
 
 The expected behavious is that people just format the code fragment by first selecting it and then pressing `Command + Shift + f` on MacOS or `Ctrl + Shift + f` on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what CppStyle does.
 
@@ -33,7 +33,7 @@ For Ubuntu
 
 On 64 bit platform, clang-format can also be downloaded from this [page](https://sublime.wbond.net/packages/Clang%20Format).
 
-If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/releases/download.html) and extract the clang-format binary yourself. Just extract the .tar.xz file and copy bin/clang-format into your PATH (e.g. /usr/local/bin). - Set the path to the clang-format binaries. 
+If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/releases/download.html) and extract the clang-format binary yourself. Just extract the .tar.xz file and copy bin/clang-format into your PATH (e.g. /usr/local/bin). - Set the path to the clang-format binaries.
 
 ## Installation
 
@@ -43,7 +43,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 **Drag the above button to your running Eclipse workspace**
 
-[Go to Eclipse Marketplace page] (https://marketplace.eclipse.org/content/cppstyle) 
+[Go to Eclipse Marketplace page] (https://marketplace.eclipse.org/content/cppstyle)
 
 ### Install from update site
 
