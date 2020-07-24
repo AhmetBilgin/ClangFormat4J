@@ -1,27 +1,19 @@
-CppStyle for Java
+ClangFormat4J
 ========================
 [![Build Status](https://travis-ci.org/wangzw/CppStyle.svg?branch=master)](https://travis-ci.org/wangzw/CppStyle)
 [![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883 "Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
-**An Eclipse plugin that integrates the clang-format tool as an alternative C/C++ code formatter and checks C++ coding style with the cpplint.py tool.**
+**An Eclipse plugin that integrates the clang-format tool as an alternative Java code formatter.**
 
 ## Description
-A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a C/C++ IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating. 
+A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a Java IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating. 
 
-The expected behavious is that people just format the code fragment by first selecting it and then pressing `Command + Shift + f` on MacOS or `Ctrl + Shift + f` on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what CppStyle does.
+The expected behavious is that people just format the code fragment by first selecting it and then pressing `Command + Shift + f` on MacOS or `Ctrl + Shift + f` on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what ClangFormat4J does.
 
-There are many C/C++ code format tools such as "[astyle](http://astyle.sourceforge.net/)" but currently **"[clang-format](http://clang.llvm.org/docs/ClangFormat.html)"** is my favorite. It has several pre-defined styles and is highly configurable.
-
-**[cpplint.py](https://google.github.io/styleguide/cppguide.html#cpplint)** is a C++ coding style checker provided by google. It can be used to check the C++ code against the [Google C++ coding style](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html). It can detect many style errors and maintain the consistency of coding style.
+There are many Java code format tools such as "[astyle](http://astyle.sourceforge.net/)" but currently **"[clang-format](http://clang.llvm.org/docs/ClangFormat.html)"** is my favorite. It has several pre-defined styles and is highly configurable.
 
 ## Requirement
-    cpplint.py     https://google.github.io/styleguide/cppguide.html#cpplint
     clang-format   http://clang.llvm.org/docs/ClangFormat.html
-
-### Install cpplint.py on Linux/MacOS
-
-    sudo curl -L "https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py" -o /usr/bin/cpplint.py
-    sudo chmod a+x /usr/bin/cpplint.py
 
 ### Install clang-format on Linux/MacOS
 clanf-format can be built from llvm/clang source. But installing from binary is much easier.
