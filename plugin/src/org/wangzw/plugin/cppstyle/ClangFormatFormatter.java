@@ -161,8 +161,6 @@ public class ClangFormatFormatter extends CodeFormatter {
                 errout.append(buffer, 0, rsz);
             }
 
-            String newSource = stdout.toString();
-
             int code = process.waitFor();
             if (code != 0) {
                 err.println("clang-format return error (" + code + ").");
@@ -175,19 +173,19 @@ public class ClangFormatFormatter extends CodeFormatter {
                 return null;
             }
 
+            String newSource = stdout.toString();
             if (0 == source.compareTo(newSource)) {
                 err.println("0 == source.compareTo(newSource)");
                 return null;
             }
 
+            MultiTextEdit edit = new MultiTextEdit();
             diff_match_patch diff = new diff_match_patch();
 
             LinkedList<Diff> diffs = diff.diff_main(source, newSource);
             diff.diff_cleanupEfficiency(diffs);
 
             int offset = 0;
-            MultiTextEdit edit = new MultiTextEdit();
-
             for (Diff d : diffs) {
                 switch (d.operation) {
                 case INSERT:
@@ -204,9 +202,7 @@ public class ClangFormatFormatter extends CodeFormatter {
                     break;
                 }
             }
-
             return edit;
-
         }
         catch (IOException e) {
             CppStyle.log("Failed to format code", e);
@@ -409,8 +405,9 @@ public class ClangFormatFormatter extends CodeFormatter {
 
     @Override
     public TextEdit format(int kind, String source, IRegion[] regions, int indentationLevel, String lineSeparator) {
-        err.println("not yet implementeed: format with Regions[]");
-        return null;
+        String message = "not yet implementeed: format with Regions[]";
+        err.println(message);
+        throw new RuntimeException(message);
     }
 
 }
