@@ -10,7 +10,7 @@
 
 	<properties>
 		<tycho.version>0.25.0</tycho.version>
-		<targetdefinition.version>4.12</targetdefinition.version>
+		<targetplatform.version>4.12</targetplatform.version>
 	</properties>
 
 	<modules>
@@ -53,8 +53,8 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>targetdefinition</artifactId>
-							<version>${targetdefinition.version}</version>
+							<artifactId>targetplatform</artifactId>
+							<version>${targetplatform.version}</version>
 						</artifact>
 					</target>
 					<environments>
