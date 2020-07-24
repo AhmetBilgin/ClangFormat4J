@@ -1,4 +1,4 @@
-package org.wangzw.plugin.cppstyle.alternative;
+package org.wangzw.plugin.cppstyle.replacement;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

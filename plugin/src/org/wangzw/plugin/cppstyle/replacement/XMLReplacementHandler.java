@@ -1,4 +1,4 @@
-package org.wangzw.plugin.cppstyle.alternative;
+package org.wangzw.plugin.cppstyle.replacement;
 
 import java.util.ArrayList;
 import java.util.List;
