@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.wangzw.clang-format4j
 Bundle-SymbolicName: org.wangzw.clang-format4j;singleton:=true
-Bundle-Version: 1.5.0.0
+Bundle-Version: 1.0.0.0
 Bundle-Activator: org.wangzw.plugin.cppstyle.CppStyle
 Bundle-Vendor: Zhanwei Wang
 Require-Bundle: org.eclipse.ui,
