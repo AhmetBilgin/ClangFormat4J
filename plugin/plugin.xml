@@ -19,7 +19,7 @@
    <extension point="org.eclipse.jdt.core.javaFormatter">
    		<javaFormatter
 	         name="ClangFormat4J"
-	         class="org.wangzw.plugin.cppstyle.replacement.Formatter"
+	         class="org.wangzw.plugin.cppstyle.ReplacementFormatter"
              id="org.wangzw.plugin.cppstyle.replacement.Formatter">
    		</javaFormatter>
    </extension>

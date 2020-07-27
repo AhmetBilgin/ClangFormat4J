@@ -40,10 +40,6 @@ public class CppStyle extends AbstractUIPlugin {
         super.stop(context);
     }
 
-    public static String getCpplintPath() {
-        return plugin.getPreferenceStore().getString(CppStyleConstants.CPPLINT_PATH);
-    }
-
     /**
      * Returns the shared instance
      *
@@ -118,7 +114,9 @@ public class CppStyle extends AbstractUIPlugin {
             // no console found, so create a new one
             CppStyleConsolePatternMatchListener listener = new CppStyleConsolePatternMatchListener();
             console = new CppStyleMessageConsole(listener);
-            conMan.addConsoles(new IConsole[] { console });
+            conMan.addConsoles(new IConsole[] {
+                    console
+            });
         }
 
         console.clear();

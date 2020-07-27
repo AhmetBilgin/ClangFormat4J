@@ -257,59 +257,6 @@ public class ClangFormatFormatter extends CodeFormatter {
         return true;
     }
 
-    private boolean enableClangFormatOnSave(IResource resource) {
-        boolean enable =
-                CppStyle.getDefault().getPreferenceStore().getBoolean(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE);
-
-        try {
-            IProject project = resource.getProject();
-            String enableProjectSpecific =
-                    project.getPersistentProperty(new QualifiedName("", CppStyleConstants.PROJECTS_PECIFIC_PROPERTY));
-
-            if (enableProjectSpecific != null && Boolean.parseBoolean(enableProjectSpecific)) {
-                String value = project.getPersistentProperty(
-                        new QualifiedName("", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
-                if (value != null) {
-                    return Boolean.parseBoolean(value);
-                }
-
-                return false;
-            }
-        }
-        catch (CoreException e) {
-            CppStyle.log(e);
-        }
-
-        return enable;
-    }
-
-    public boolean runClangFormatOnSave(IResource resource) {
-        if (!enableClangFormatOnSave(resource)) {
-            return false;
-        }
-
-        String clangFormat = getClangFormatPath();
-
-        if (clangFormat == null) {
-            err.println("clang-format command must be specified in preferences.");
-            return false;
-        }
-
-        File file = new File(clangFormat);
-
-        if (!file.exists()) {
-            err.println("clang-format (" + clangFormat + ") does not exist.");
-            return false;
-        }
-
-        if (!file.canExecute()) {
-            err.println("clang-format (" + clangFormat + ") is not executable.");
-            return false;
-        }
-
-        return true;
-    }
-
     public static String getClangFormatPath() {
         return CppStyle.getDefault().getPreferenceStore().getString(CppStyleConstants.CLANG_FORMAT_PATH);
     }
