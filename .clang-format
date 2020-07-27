@@ -1,0 +1,21 @@
+---
+Language: Java
+BasedOnStyle: Chromium
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  BeforeCatch: true
+  BeforeElse: true
+BreakBeforeTernaryOperators: false
+ColumnLimit: 120
+Cpp11BracedListStyle: false
+IndentCaseLabels: false
+IndentWrappedFunctionNames: true
+KeepEmptyLinesAtTheStartOfBlocks: true
+SortIncludes: false
+SpaceAfterCStyleCast: false
+Standard: Cpp11
