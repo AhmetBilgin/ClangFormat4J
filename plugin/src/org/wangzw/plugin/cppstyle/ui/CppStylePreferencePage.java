@@ -2,14 +2,12 @@ package org.wangzw.plugin.cppstyle.ui;
 
 import java.io.File;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.wangzw.plugin.cppstyle.ClangFormatFormatter;
 import org.wangzw.plugin.cppstyle.CppStyle;
 
 /**
@@ -25,7 +23,6 @@ import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     private FileFieldEditor clangFormatPath = null;
-    private BooleanFieldEditor enableClangFormatOnSave = null;
 
     public CppStylePreferencePage() {
         super(GRID);
@@ -33,26 +30,18 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
     }
 
     /**
-     * Creates the field editors. Field editors are abstractions of the common
-     * GUI blocks needed to manipulate various types of preferences. Each field
-     * editor knows how to save and restore itself.
+     * Creates the field editors. Field editors are abstractions of the common GUI
+     * blocks needed to manipulate various types of preferences. Each field editor
+     * knows how to save and restore itself.
      */
+    @Override
     public void createFieldEditors() {
         clangFormatPath =
                 new FileFieldEditor(CppStyleConstants.CLANG_FORMAT_PATH, "Clang-format path:", getFieldEditorParent());
-
         addField(clangFormatPath);
-
-        enableClangFormatOnSave = new BooleanFieldEditor(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE,
-                CppStyleConstants.ENABLE_CLANGFORMAT_TEXT, getFieldEditorParent());
-
-        if (!checkPathExist(ClangFormatFormatter.getClangFormatPath())) {
-            enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
-        }
-
-        addField(enableClangFormatOnSave);
     }
 
+    @Override
     public void init(IWorkbench workbench) {
     }
 
@@ -76,12 +65,10 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
 
     private void clangFormatPathChange(String newPath) {
         if (!checkPathExist(newPath)) {
-            enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
             this.setValid(false);
             this.setErrorMessage("Clang-format path \"" + newPath + "\" does not exist");
         }
         else {
-            enableClangFormatOnSave.setEnabled(true, getFieldEditorParent());
             this.setValid(true);
             this.setErrorMessage(null);
         }
