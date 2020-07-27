@@ -13,66 +13,65 @@ import org.eclipse.ui.console.TextConsolePage;
 import org.eclipse.ui.console.TextConsoleViewer;
 
 public class CppStyleConsolePage extends TextConsolePage {
-	private CppStyleConsoleViewer viewer = null;
-	private CppStyleMessageConsole console = null;
-	private ShowWhenContentChangesAction fStdOut;
-	private ShowWhenContentChangesAction fStdErr;
+    private CppStyleConsoleViewer viewer = null;
+    private CppStyleMessageConsole console = null;
+    private ShowWhenContentChangesAction fStdOut;
+    private ShowWhenContentChangesAction fStdErr;
 
-	public CppStyleConsolePage(CppStyleMessageConsole console, IConsoleView view) {
-		super(console, view);
-		this.console = console;
-	}
+    public CppStyleConsolePage(CppStyleMessageConsole console, IConsoleView view) {
+        super(console, view);
+        this.console = console;
+    }
 
-	@Override
-	public void dispose() {
-		super.dispose();
+    @Override
+    public void dispose() {
+        super.dispose();
 
-		if (fStdOut != null) {
-			fStdOut.dispose();
-			fStdOut = null;
-		}
-		if (fStdErr != null) {
-			fStdErr.dispose();
-			fStdErr = null;
-		}
-	}
+        if (fStdOut != null) {
+            fStdOut.dispose();
+            fStdOut = null;
+        }
+        if (fStdErr != null) {
+            fStdErr.dispose();
+            fStdErr = null;
+        }
+    }
 
-	@Override
-	protected TextConsoleViewer createViewer(Composite parent) {
-		viewer = new CppStyleConsoleViewer(parent, console);
-		return viewer;
-	}
+    @Override
+    protected TextConsoleViewer createViewer(Composite parent) {
+        viewer = new CppStyleConsoleViewer(parent, console);
+        return viewer;
+    }
 
-	@Override
-	protected void contextMenuAboutToShow(IMenuManager menuManager) {
-		super.contextMenuAboutToShow(menuManager);
-		menuManager.remove(ActionFactory.CUT.getId());
-		menuManager.remove(ActionFactory.PASTE.getId());
-	}
+    @Override
+    protected void contextMenuAboutToShow(IMenuManager menuManager) {
+        super.contextMenuAboutToShow(menuManager);
+        menuManager.remove(ActionFactory.CUT.getId());
+        menuManager.remove(ActionFactory.PASTE.getId());
+    }
 
-	@Override
-	protected void configureToolBar(IToolBarManager mgr) {
-		super.configureToolBar(mgr);
-		fStdOut = new ShowStandardOutAction();
-		fStdErr = new ShowStandardErrorAction();
-		mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP, fStdOut);
-		mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP, fStdErr);
-	}
+    @Override
+    protected void configureToolBar(IToolBarManager mgr) {
+        super.configureToolBar(mgr);
+        fStdOut = new ShowStandardOutAction();
+        fStdErr = new ShowStandardErrorAction();
+        mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP, fStdOut);
+        mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP, fStdErr);
+    }
 
-	public boolean activeOnStdout() {
-		if (fStdOut == null || !fStdOut.isChecked()) {
-			return false;
-		}
+    public boolean activeOnStdout() {
+        if (fStdOut == null || !fStdOut.isChecked()) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public boolean activeOnStderr() {
-		if (fStdErr == null || !fStdErr.isChecked()) {
-			return false;
-		}
+    public boolean activeOnStderr() {
+        if (fStdErr == null || !fStdErr.isChecked()) {
+            return false;
+        }
 
-		return true;
-	}
-
+        return true;
+    }
 }

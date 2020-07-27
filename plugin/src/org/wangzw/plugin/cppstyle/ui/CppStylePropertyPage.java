@@ -36,304 +36,292 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.Workbench;
 
-public class CppStylePropertyPage extends PropertyPage implements
-		SelectionListener, IPropertyChangeListener, ModifyListener {
+public class CppStylePropertyPage
+        extends PropertyPage implements SelectionListener, IPropertyChangeListener, ModifyListener {
 
-	private static final String PROJECTS_PECIFIC_TEXT = "Enable project specific settings";
+    private static final String PROJECTS_PECIFIC_TEXT = "Enable project specific settings";
 
-	private Button projectSpecificButton;
-	private Button enableCpplintOnSaveButton;
-	private Button enableClangFormatOnSaveButton;
-	private DirectoryFieldEditor projectRoot;
-	private Text projectRootText = null;
-	String projectPath = null;
+    private Button projectSpecificButton;
+    private Button enableCpplintOnSaveButton;
+    private Button enableClangFormatOnSaveButton;
+    private DirectoryFieldEditor projectRoot;
+    private Text projectRootText = null;
+    String projectPath = null;
 
-	/**
-	 * Constructor for SamplePropertyPage.
-	 */
-	public CppStylePropertyPage() {
-		super();
-	}
+    /**
+     * Constructor for SamplePropertyPage.
+     */
+    public CppStylePropertyPage() {
+        super();
+    }
 
-	private void constructPage(Composite parent) {
-		Composite composite = createComposite(parent, 2);
+    private void constructPage(Composite parent) {
+        Composite composite = createComposite(parent, 2);
 
-		projectSpecificButton = new Button(composite, SWT.CHECK);
-		projectSpecificButton.setText(PROJECTS_PECIFIC_TEXT);
-		projectSpecificButton.addSelectionListener(this);
+        projectSpecificButton = new Button(composite, SWT.CHECK);
+        projectSpecificButton.setText(PROJECTS_PECIFIC_TEXT);
+        projectSpecificButton.addSelectionListener(this);
 
-		Button perfSetting = new Button(composite, SWT.PUSH);
-		perfSetting.setText("Configure Workspace Settings...");
-		perfSetting.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				configureWorkspaceSettings();
-			}
-		});
+        Button perfSetting = new Button(composite, SWT.PUSH);
+        perfSetting.setText("Configure Workspace Settings...");
+        perfSetting.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                configureWorkspaceSettings();
+            }
+        });
 
-		createSepeerater(parent);
+        createSepeerater(parent);
 
-		composite = createComposite(parent, 1);
+        composite = createComposite(parent, 1);
 
-		enableCpplintOnSaveButton = new Button(composite, SWT.CHECK);
-		enableCpplintOnSaveButton
-				.setText(CppStyleConstants.ENABLE_CPPLINT_TEXT);
-		enableCpplintOnSaveButton.addSelectionListener(this);
+        enableCpplintOnSaveButton = new Button(composite, SWT.CHECK);
+        enableCpplintOnSaveButton.setText(CppStyleConstants.ENABLE_CPPLINT_TEXT);
+        enableCpplintOnSaveButton.addSelectionListener(this);
 
-		enableClangFormatOnSaveButton = new Button(composite, SWT.CHECK);
-		enableClangFormatOnSaveButton
-				.setText(CppStyleConstants.ENABLE_CLANGFORMAT_TEXT);
-		enableClangFormatOnSaveButton.addSelectionListener(this);
+        enableClangFormatOnSaveButton = new Button(composite, SWT.CHECK);
+        enableClangFormatOnSaveButton.setText(CppStyleConstants.ENABLE_CLANGFORMAT_TEXT);
+        enableClangFormatOnSaveButton.addSelectionListener(this);
 
-		createSepeerater(parent);
+        createSepeerater(parent);
 
-		composite = createComposite(parent, 1);
+        composite = createComposite(parent, 1);
 
-		Label laber = new Label(composite, SWT.NONE);
-		laber.setText(CppStyleConstants.PROJECT_ROOT_TEXT);
+        Label laber = new Label(composite, SWT.NONE);
+        laber.setText(CppStyleConstants.PROJECT_ROOT_TEXT);
 
-		composite = createComposite(composite, 1);
+        composite = createComposite(composite, 1);
 
-		projectPath = getCurrentProject();
+        projectPath = getCurrentProject();
 
-		projectRoot = new DirectoryFieldEditor(CppStyleConstants.CPPLINT_PATH,
-				"Root:", composite) {
-			String errorMsg = super.getErrorMessage();
+        projectRoot = new DirectoryFieldEditor(CppStyleConstants.CPPLINT_PATH, "Root:", composite) {
+            String errorMsg = super.getErrorMessage();
 
-			@Override
-			protected boolean doCheckState() {
-				this.setErrorMessage(errorMsg);
+            @Override
+            protected boolean doCheckState() {
+                this.setErrorMessage(errorMsg);
 
-				String fileName = getTextControl().getText();
-				fileName = fileName.trim();
-				if (fileName.length() == 0 && isEmptyStringAllowed()) {
-					return true;
-				}
+                String fileName = getTextControl().getText();
+                fileName = fileName.trim();
+                if (fileName.length() == 0 && isEmptyStringAllowed()) {
+                    return true;
+                }
 
-				File file = new File(fileName);
-				if (false == file.isDirectory()) {
-					return false;
-				}
+                File file = new File(fileName);
+                if (false == file.isDirectory()) {
+                    return false;
+                }
 
-				this.setErrorMessage("Directory or its up level directories should contain .git, .hg, or .svn.");
+                this.setErrorMessage("Directory or its up level directories should contain .git, .hg, or .svn.");
 
-				String path = "";//CpplintCheckSettings.getVersionControlRoot(file);
+                String path = ""; // CpplintCheckSettings.getVersionControlRoot(file);
 
-				if (path == null) {
-					return false;
-				}
+                if (path == null) {
+                    return false;
+                }
 
-				if (!path.startsWith(projectPath)) {
-					this.setErrorMessage("Should be a subdirectory of project's root.");
-					return false;
-				}
+                if (!path.startsWith(projectPath)) {
+                    this.setErrorMessage("Should be a subdirectory of project's root.");
+                    return false;
+                }
 
-				return true;
-			}
+                return true;
+            }
+        };
 
-		};
+        projectRoot.setPage(this);
+        projectRoot.setFilterPath(new File(projectPath));
+        projectRoot.setPropertyChangeListener(this);
+        projectRootText = projectRoot.getTextControl(composite);
+        projectRootText.addModifyListener(this);
+        projectRoot.setEnabled(true, composite);
 
-		projectRoot.setPage(this);
-		projectRoot.setFilterPath(new File(projectPath));
-		projectRoot.setPropertyChangeListener(this);
-		projectRootText = projectRoot.getTextControl(composite);
-		projectRootText.addModifyListener(this);
-		projectRoot.setEnabled(true, composite);
+        if (!getPropertyValue(CppStyleConstants.PROJECTS_PECIFIC_PROPERTY)) {
+            projectSpecificButton.setSelection(false);
+            enableCpplintOnSaveButton.setEnabled(false);
+            enableClangFormatOnSaveButton.setEnabled(false);
+        }
+        else {
+            projectSpecificButton.setSelection(true);
+            enableCpplintOnSaveButton.setEnabled(true);
+            enableCpplintOnSaveButton.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CPPLINT_PROPERTY));
+            enableClangFormatOnSaveButton.setEnabled(true);
+            enableClangFormatOnSaveButton.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
+        }
 
-		if (!getPropertyValue(CppStyleConstants.PROJECTS_PECIFIC_PROPERTY)) {
-			projectSpecificButton.setSelection(false);
-			enableCpplintOnSaveButton.setEnabled(false);
-			enableClangFormatOnSaveButton.setEnabled(false);
-		} else {
-			projectSpecificButton.setSelection(true);
-			enableCpplintOnSaveButton.setEnabled(true);
-			enableCpplintOnSaveButton
-					.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CPPLINT_PROPERTY));
-			enableClangFormatOnSaveButton.setEnabled(true);
-			enableClangFormatOnSaveButton
-					.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
-		}
+        String root = getPropertyValueString(CppStyleConstants.CPPLINT_PROJECT_ROOT);
+        projectRoot.setStringValue(root);
+    }
 
-		String root = getPropertyValueString(CppStyleConstants.CPPLINT_PROJECT_ROOT);
-		projectRoot.setStringValue(root);
-	}
+    public static String getCurrentProject() {
+        ISelectionService selectionService = Workbench.getInstance().getActiveWorkbenchWindow().getSelectionService();
 
-	public static String getCurrentProject() {
-		ISelectionService selectionService = Workbench.getInstance()
-				.getActiveWorkbenchWindow().getSelectionService();
+        ISelection selection = selectionService.getSelection();
 
-		ISelection selection = selectionService.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            Object element = ((IStructuredSelection)selection).getFirstElement();
+            IProject project = null;
+            if (element instanceof IResource) {
+                project = ((IResource)element).getProject();
+            }
 
-		if (selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection).getFirstElement();
-			IProject project = null;		
-			if (element instanceof IResource) {
-				project = ((IResource) element).getProject();
-			}
-			
-			if (project != null) {
-				return project.getLocation().toOSString();
-			}
-		}
-		return null;
-	}
+            if (project != null) {
+                return project.getLocation().toOSString();
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * @see PreferencePage#createContents(Composite)
-	 */
-	protected Control createContents(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		composite.setLayout(layout);
-		GridData data = new GridData(SWT.FILL);
-		data.grabExcessHorizontalSpace = true;
-		composite.setLayoutData(data);
-		constructPage(composite);
-		return composite;
-	}
+    /**
+     * @see PreferencePage#createContents(Composite)
+     */
+    protected Control createContents(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        composite.setLayout(layout);
+        GridData data = new GridData(SWT.FILL);
+        data.grabExcessHorizontalSpace = true;
+        composite.setLayoutData(data);
+        constructPage(composite);
+        return composite;
+    }
 
-	private Composite createComposite(Composite parent, int ncols) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = ncols;
-		composite.setLayout(layout);
+    private Composite createComposite(Composite parent, int ncols) {
+        Composite composite = new Composite(parent, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = ncols;
+        composite.setLayout(layout);
 
-		GridData data = new GridData(SWT.FILL);
-		data.verticalAlignment = SWT.FILL;
-		data.horizontalAlignment = SWT.FILL;
-		data.grabExcessHorizontalSpace = true;
-		composite.setLayoutData(data);
+        GridData data = new GridData(SWT.FILL);
+        data.verticalAlignment = SWT.FILL;
+        data.horizontalAlignment = SWT.FILL;
+        data.grabExcessHorizontalSpace = true;
+        composite.setLayoutData(data);
 
-		return composite;
-	}
+        return composite;
+    }
 
-	private void createSepeerater(Composite parent) {
-		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = SWT.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		separator.setLayoutData(gridData);
-	}
+    private void createSepeerater(Composite parent) {
+        Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+        GridData gridData = new GridData();
+        gridData.horizontalAlignment = SWT.FILL;
+        gridData.grabExcessHorizontalSpace = true;
+        separator.setLayoutData(gridData);
+    }
 
-	protected void performDefaults() {
-		super.performDefaults();
-		projectSpecificButton.setSelection(false);
-		enableCpplintOnSaveButton.setSelection(false);
-		enableCpplintOnSaveButton.setEnabled(false);
-		enableClangFormatOnSaveButton.setSelection(false);
-		enableClangFormatOnSaveButton.setEnabled(false);
-		projectRoot.setStringValue("");
-	}
+    protected void performDefaults() {
+        super.performDefaults();
+        projectSpecificButton.setSelection(false);
+        enableCpplintOnSaveButton.setSelection(false);
+        enableCpplintOnSaveButton.setEnabled(false);
+        enableClangFormatOnSaveButton.setSelection(false);
+        enableClangFormatOnSaveButton.setEnabled(false);
+        projectRoot.setStringValue("");
+    }
 
-	public boolean performOk() {
-		try {
-			((IResource) getElement()).setPersistentProperty(new QualifiedName(
-					"", CppStyleConstants.PROJECTS_PECIFIC_PROPERTY),
-					new Boolean(projectSpecificButton.getSelection())
-							.toString());
+    public boolean performOk() {
+        try {
+            ((IResource)getElement())
+                    .setPersistentProperty(new QualifiedName("", CppStyleConstants.PROJECTS_PECIFIC_PROPERTY),
+                            new Boolean(projectSpecificButton.getSelection()).toString());
 
-			((IResource) getElement()).setPersistentProperty(new QualifiedName(
-					"", CppStyleConstants.ENABLE_CPPLINT_PROPERTY),
-					new Boolean(enableCpplintOnSaveButton.getSelection())
-							.toString());
+            ((IResource)getElement())
+                    .setPersistentProperty(new QualifiedName("", CppStyleConstants.ENABLE_CPPLINT_PROPERTY),
+                            new Boolean(enableCpplintOnSaveButton.getSelection()).toString());
 
-			((IResource) getElement()).setPersistentProperty(new QualifiedName(
-					"", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY),
-					new Boolean(enableClangFormatOnSaveButton.getSelection())
-							.toString());
+            ((IResource)getElement())
+                    .setPersistentProperty(new QualifiedName("", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY),
+                            new Boolean(enableClangFormatOnSaveButton.getSelection()).toString());
 
-			((IResource) getElement()).setPersistentProperty(new QualifiedName(
-					"", CppStyleConstants.CPPLINT_PROJECT_ROOT), projectRoot
-					.getStringValue());
-		} catch (CoreException e) {
-			return false;
-		}
-		return true;
-	}
+            ((IResource)getElement())
+                    .setPersistentProperty(new QualifiedName("", CppStyleConstants.CPPLINT_PROJECT_ROOT),
+                            projectRoot.getStringValue());
+        }
+        catch (CoreException e) {
+            return false;
+        }
+        return true;
+    }
 
-	public String getPropertyValueString(String key) {
-		String value;
-		try {
-			value = ((IResource) getElement())
-					.getPersistentProperty(new QualifiedName("", key));
-			if (value == null) {
-				return "";
-			}
+    public String getPropertyValueString(String key) {
+        String value;
+        try {
+            value = ((IResource)getElement()).getPersistentProperty(new QualifiedName("", key));
+            if (value == null) {
+                return "";
+            }
+        }
+        catch (CoreException e) {
+            return "";
+        }
 
-		} catch (CoreException e) {
-			return "";
-		}
+        return value;
+    }
 
-		return value;
-	}
+    public boolean getPropertyValue(String key) {
+        return Boolean.parseBoolean(getPropertyValueString(key));
+    }
 
-	public boolean getPropertyValue(String key) {
-		return Boolean.parseBoolean(getPropertyValueString(key));
-	}
+    /**
+     * Creates a new preferences page and opens it
+     */
+    public void configureWorkspaceSettings() {
+        // create a new instance of the current class
+        IPreferencePage page = new CppStylePreferencePage();
+        page.setTitle(getTitle());
+        // and show it
+        showPreferencePage(CppStyleConstants.PREFERENCE_PAGE_ID, page);
+    }
 
-	/**
-	 * Creates a new preferences page and opens it
-	 */
-	public void configureWorkspaceSettings() {
-		// create a new instance of the current class
-		IPreferencePage page = new CppStylePreferencePage();
-		page.setTitle(getTitle());
-		// and show it
-		showPreferencePage(CppStyleConstants.PREFERENCE_PAGE_ID, page);
-	}
+    /**
+     * Show a single preference pages
+     *
+     * @param id
+     *            - the preference page identification
+     * @param page
+     *            - the preference page
+     */
+    protected void showPreferencePage(String id, IPreferencePage page) {
+        final IPreferenceNode targetNode = new PreferenceNode(id, page);
+        PreferenceManager manager = new PreferenceManager();
+        manager.addToRoot(targetNode);
+        final PreferenceDialog dialog = new PreferenceDialog(getControl().getShell(), manager);
+        BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
+            public void run() {
+                dialog.create();
+                dialog.setMessage(targetNode.getLabelText());
+                dialog.open();
+            }
+        });
+    }
 
-	/**
-	 * Show a single preference pages
-	 * 
-	 * @param id
-	 *            - the preference page identification
-	 * @param page
-	 *            - the preference page
-	 */
-	protected void showPreferencePage(String id, IPreferencePage page) {
-		final IPreferenceNode targetNode = new PreferenceNode(id, page);
-		PreferenceManager manager = new PreferenceManager();
-		manager.addToRoot(targetNode);
-		final PreferenceDialog dialog = new PreferenceDialog(getControl()
-				.getShell(), manager);
-		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
-			public void run() {
-				dialog.create();
-				dialog.setMessage(targetNode.getLabelText());
-				dialog.open();
-			}
-		});
-	}
+    @Override
+    public void widgetSelected(SelectionEvent e) {
+        if (e.getSource() == projectSpecificButton) {
+            enableCpplintOnSaveButton.setEnabled(projectSpecificButton.getSelection());
+            enableClangFormatOnSaveButton.setEnabled(projectSpecificButton.getSelection());
+        }
+    }
 
-	@Override
-	public void widgetSelected(SelectionEvent e) {
-		if (e.getSource() == projectSpecificButton) {
-			enableCpplintOnSaveButton.setEnabled(projectSpecificButton
-					.getSelection());
-			enableClangFormatOnSaveButton.setEnabled(projectSpecificButton
-					.getSelection());
-		}
-	}
+    @Override
+    public void widgetDefaultSelected(SelectionEvent e) {
+        widgetSelected(e);
+    }
 
-	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		widgetSelected(e);
-	}
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getProperty().equals(FieldEditor.VALUE)) {
+            if (event.getSource() == projectRoot) {
+                setValid(projectRoot.isValid());
+            }
+        }
+    }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getProperty().equals(FieldEditor.VALUE)) {
-			if (event.getSource() == projectRoot) {
-				setValid(projectRoot.isValid());
-			}
-		}
-	}
-
-	@Override
-	public void modifyText(ModifyEvent e) {
-		if (e.getSource() == projectRootText) {
-			if (projectRootText.getText().isEmpty()) {
-				setValid(true);
-			}
-		}
-	}
+    @Override
+    public void modifyText(ModifyEvent e) {
+        if (e.getSource() == projectRootText) {
+            if (projectRootText.getText().isEmpty()) {
+                setValid(true);
+            }
+        }
+    }
 }

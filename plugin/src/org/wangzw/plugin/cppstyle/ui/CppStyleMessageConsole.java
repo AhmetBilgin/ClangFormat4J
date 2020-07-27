@@ -36,7 +36,8 @@ public class CppStyleMessageConsole extends MessageConsole {
         }
     }
 
-    public static final String ERROR_MARKER_CATEGORY = "org.wangzw.clang-format4j.ERROR_MARKER_POSITION";;
+    public static final String ERROR_MARKER_CATEGORY = "org.wangzw.clang-format4j.ERROR_MARKER_POSITION";
+    ;
 
     private CppStyleConsolePatternMatchListener listener = null;
 
@@ -47,7 +48,6 @@ public class CppStyleMessageConsole extends MessageConsole {
         addPatternMatchListener(listener);
 
         runUI(new Runnable() {
-
             @Override
             public void run() {
                 err.setColor(new Color(getStandardDisplay(), new RGB(255, 0, 0)));
@@ -189,13 +189,11 @@ public class CppStyleMessageConsole extends MessageConsole {
 
     public void clear() {
         runUI(new Runnable() {
-
             @Override
             public void run() {
                 IDocument document = getDocument();
                 document.set("");
             };
         });
-
     }
 }

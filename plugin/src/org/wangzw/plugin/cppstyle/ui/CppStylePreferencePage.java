@@ -24,65 +24,66 @@ import org.wangzw.plugin.cppstyle.CppStyle;
  */
 
 public class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-	private FileFieldEditor clangFormatPath = null;
-	private BooleanFieldEditor enableClangFormatOnSave = null;
+    private FileFieldEditor clangFormatPath = null;
+    private BooleanFieldEditor enableClangFormatOnSave = null;
 
-	public CppStylePreferencePage() {
-		super(GRID);
-		setPreferenceStore(CppStyle.getDefault().getPreferenceStore());
-	}
+    public CppStylePreferencePage() {
+        super(GRID);
+        setPreferenceStore(CppStyle.getDefault().getPreferenceStore());
+    }
 
-	/**
-	 * Creates the field editors. Field editors are abstractions of the common
-	 * GUI blocks needed to manipulate various types of preferences. Each field
-	 * editor knows how to save and restore itself.
-	 */
-	public void createFieldEditors() {
-		clangFormatPath = new FileFieldEditor(CppStyleConstants.CLANG_FORMAT_PATH, "Clang-format path:",
-				getFieldEditorParent());
+    /**
+     * Creates the field editors. Field editors are abstractions of the common
+     * GUI blocks needed to manipulate various types of preferences. Each field
+     * editor knows how to save and restore itself.
+     */
+    public void createFieldEditors() {
+        clangFormatPath =
+                new FileFieldEditor(CppStyleConstants.CLANG_FORMAT_PATH, "Clang-format path:", getFieldEditorParent());
 
-		addField(clangFormatPath);
+        addField(clangFormatPath);
 
-		enableClangFormatOnSave = new BooleanFieldEditor(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE,
-				CppStyleConstants.ENABLE_CLANGFORMAT_TEXT, getFieldEditorParent());
+        enableClangFormatOnSave = new BooleanFieldEditor(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE,
+                CppStyleConstants.ENABLE_CLANGFORMAT_TEXT, getFieldEditorParent());
 
-		if (!checkPathExist(ClangFormatFormatter.getClangFormatPath())) {
-			enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
-		}
+        if (!checkPathExist(ClangFormatFormatter.getClangFormatPath())) {
+            enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
+        }
 
-		addField(enableClangFormatOnSave);
-	}
+        addField(enableClangFormatOnSave);
+    }
 
-	public void init(IWorkbench workbench) {
-	}
+    public void init(IWorkbench workbench) {
+    }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		super.propertyChange(event);
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        super.propertyChange(event);
 
-		if (event.getProperty().equals(FieldEditor.VALUE)) {
-			if (event.getSource() == clangFormatPath) {
-				clangFormatPathChange(event.getNewValue().toString());
-			}
+        if (event.getProperty().equals(FieldEditor.VALUE)) {
+            if (event.getSource() == clangFormatPath) {
+                clangFormatPathChange(event.getNewValue().toString());
+            }
 
-			checkState();
-		}
-	}
+            checkState();
+        }
+    }
 
-	private boolean checkPathExist(String path) {
-		File file = new File(path);
-		return file.exists() && !file.isDirectory();
-	}
+    private boolean checkPathExist(String path) {
+        File file = new File(path);
+        return file.exists() && !file.isDirectory();
+    }
 
-	private void clangFormatPathChange(String newPath) {
-		if (!checkPathExist(newPath)) {
-			enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
-			this.setValid(false);
-			this.setErrorMessage("Clang-format path \"" + newPath + "\" does not exist");
-		} else {
-			enableClangFormatOnSave.setEnabled(true, getFieldEditorParent());
-			this.setValid(true);
-			this.setErrorMessage(null);
-		}
-	}
+    private void clangFormatPathChange(String newPath) {
+        if (!checkPathExist(newPath)) {
+            enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
+            this.setValid(false);
+            this.setErrorMessage("Clang-format path \"" + newPath + "\" does not exist");
+        }
+        else {
+            enableClangFormatOnSave.setEnabled(true, getFieldEditorParent());
+            this.setValid(true);
+            this.setErrorMessage(null);
+        }
+    }
 }

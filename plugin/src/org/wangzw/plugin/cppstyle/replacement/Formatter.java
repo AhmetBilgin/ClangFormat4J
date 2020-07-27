@@ -60,14 +60,16 @@ public class Formatter extends CodeFormatter {
     }
 
     @Override
-    public TextEdit format(int kind, String source, int offset, int length, int indentationLevel,
-            String lineSeparator) {
+    public TextEdit format(
+            int kind, String source, int offset, int length, int indentationLevel, String lineSeparator) {
         IPreferenceStore prefs = CppStyle.getDefault().getPreferenceStore();
         Runtime RT = Runtime.getRuntime();
         String err = "";
         String[] args = {
-                prefs.getString(CppStyleConstants.CLANG_FORMAT_PATH), String.format("-offset=%d", offset),
-                String.format("-length=%d", length), "-output-replacements-xml",
+            prefs.getString(CppStyleConstants.CLANG_FORMAT_PATH),
+            String.format("-offset=%d", offset),
+            String.format("-length=%d", length),
+            "-output-replacements-xml",
         };
         String[] options;
         try {
@@ -133,7 +135,7 @@ public class Formatter extends CodeFormatter {
         }
         int textOffset = 0;
         int textLength = source.length();
-        MultiTextEdit textEdit = new MultiTextEdit();/* new MultiTextEdit(textOffset, textLength); */
+        MultiTextEdit textEdit = new MultiTextEdit(); /* new MultiTextEdit(textOffset, textLength); */
         TextEdit edits[] = new TextEdit[0];
         edits = replacementHandler.getEdits().toArray(edits);
 
@@ -151,9 +153,7 @@ public class Formatter extends CodeFormatter {
         if (filePath == null) {
             throw new Exception("Could not determine file path.");
         }
-        return new String[] {
-                "-style=file", "-assume-filename=" + filePath
-        };
+        return new String[] { "-style=file", "-assume-filename=" + filePath };
     }
 
     private String getSourceFilePath() {
@@ -177,14 +177,15 @@ public class Formatter extends CodeFormatter {
             }
         }
 
-//        ITranslationUnit tu = (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
-//
-//        if (tu == null) {
-//            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-//            if (file != null) {
-//                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
-//            }
-//        }
+        //        ITranslationUnit tu =
+        //        (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
+        //
+        //        if (tu == null) {
+        //            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
+        //            if (file != null) {
+        //                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
+        //            }
+        //        }
 
         // added
         System.err.println("Not yet implemented: getSourceFilePath from CompilationUnit");
@@ -223,17 +224,17 @@ public class Formatter extends CodeFormatter {
         return null;
     }
 
-//    private String getTranslationUnitPath() {
-//        // taken from org.eclipse.cdt.core.CCodeFormatter
-//        ICompilationUnit tu = (ICompilationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
-//        if (tu == null) {
-//            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-//            if (file != null) {
-//                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
-//            }
-//        }
-//        return tu == null ? null : tu.getResource().getRawLocation().toOSString();
-//    }
+    //    private String getTranslationUnitPath() {
+    //        // taken from org.eclipse.cdt.core.CCodeFormatter
+    //        ICompilationUnit tu =
+    //        (ICompilationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT); if (tu == null) {
+    //            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
+    //            if (file != null) {
+    //                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
+    //            }
+    //        }
+    //        return tu == null ? null : tu.getResource().getRawLocation().toOSString();
+    //    }
 
     private String filePath() {
         IWorkbench workbench = PlatformUI.getWorkbench();
@@ -284,8 +285,7 @@ public class Formatter extends CodeFormatter {
     public TextEdit format(int kind, String source, IRegion[] regions, int indentationLevel, String lineSeparator) {
         String message = "not yet implementeed: format with Regions[]";
         System.err.println(message);
-//        throw new RuntimeException(message);
+        //        throw new RuntimeException(message);
         return null;
     }
-
 }

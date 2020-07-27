@@ -82,7 +82,6 @@ public class ClangFormatFormatter extends CodeFormatter {
         }
 
         manager.endCompoundChange();
-
     }
 
     private TextEdit format(String source, String path, IRegion region) {
@@ -268,8 +267,8 @@ public class ClangFormatFormatter extends CodeFormatter {
                     project.getPersistentProperty(new QualifiedName("", CppStyleConstants.PROJECTS_PECIFIC_PROPERTY));
 
             if (enableProjectSpecific != null && Boolean.parseBoolean(enableProjectSpecific)) {
-                String value = project
-                        .getPersistentProperty(new QualifiedName("", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
+                String value = project.getPersistentProperty(
+                        new QualifiedName("", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
                 if (value != null) {
                     return Boolean.parseBoolean(value);
                 }
@@ -351,14 +350,15 @@ public class ClangFormatFormatter extends CodeFormatter {
             }
         }
 
-//        ITranslationUnit tu = (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
-//
-//        if (tu == null) {
-//            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-//            if (file != null) {
-//                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
-//            }
-//        }
+        //        ITranslationUnit tu =
+        //        (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
+        //
+        //        if (tu == null) {
+        //            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
+        //            if (file != null) {
+        //                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
+        //            }
+        //        }
 
         // added
         err.println("Not yet implemented: getSourceFilePath from CompilationUnit");
@@ -409,5 +409,4 @@ public class ClangFormatFormatter extends CodeFormatter {
         err.println(message);
         throw new RuntimeException(message);
     }
-
 }

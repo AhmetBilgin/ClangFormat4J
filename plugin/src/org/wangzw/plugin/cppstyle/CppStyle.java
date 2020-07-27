@@ -118,9 +118,7 @@ public class CppStyle extends AbstractUIPlugin {
             // no console found, so create a new one
             CppStyleConsolePatternMatchListener listener = new CppStyleConsolePatternMatchListener();
             console = new CppStyleMessageConsole(listener);
-            conMan.addConsoles(new IConsole[] {
-                    console
-            });
+            conMan.addConsoles(new IConsole[] { console });
         }
 
         console.clear();
