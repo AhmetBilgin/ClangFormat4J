@@ -57,19 +57,20 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     @Override
-    public TextEdit format(int kind, String source, int offset, int length, int arg4, String lineSeparator) {
-        TextEdit retval = format(source, getSourceFilePath(), new Region(offset, length));
-        return retval != null ? retval : new MultiTextEdit();
+    public TextEdit format(
+            int kind, String source, int offset, int length, int indentationLevel, String lineSeparator) {
+        TextEdit retval =
+                format(kind, source, new IRegion[] { new Region(offset, length) }, indentationLevel, lineSeparator);
+        return retval;
     }
 
     @Override
     public TextEdit format(int kind, String source, IRegion[] regions, int indentationLevel, String lineSeparator) {
-        String message = "not yet implementeed: format with Regions[]";
-        err.println(message);
-        throw new RuntimeException(message);
+        TextEdit retval = format(source, getSourceFilePath(), regions);
+        return retval != null ? retval : new MultiTextEdit();
     }
 
-    protected TextEdit format(String source, String path, IRegion region) {
+    protected TextEdit format(String source, String path, IRegion[] regions) {
         String clangFormatPath = getClangFormatPath();
         if (checkClangFormat(clangFormatPath) == false) {
             return null;
@@ -88,7 +89,7 @@ public abstract class CodeFormatterBase extends CodeFormatter {
 
         try {
             ProcessHandler processHandler = createProcessHandler(source);
-            addpParameters(processHandler, clangFormatPath, path, region);
+            addpParameters(processHandler, clangFormatPath, path, regions);
             processHandler.start();
             processHandler.handleInputStream();
             processHandler.handleErrorStream();
@@ -113,7 +114,7 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     public void formatAndApply(IDocument doc, String path) {
-        TextEdit res = format(doc.get(), path, null);
+        TextEdit res = format(doc.get(), path, new IRegion[0]);
 
         if (res == null) {
             return;
@@ -135,7 +136,7 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         manager.endCompoundChange();
     }
 
-    private void addpParameters(ProcessHandler processHandler, String clangFormatPath, String path, IRegion region) {
+    private void addpParameters(ProcessHandler processHandler, String clangFormatPath, String path, IRegion[] regions) {
         processHandler.addParameter(clangFormatPath);
         processHandler.addParameter(ASSUME_FILENAME + path);
         // make clang-format do its own search for the configuration, but fall back to
@@ -143,9 +144,11 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         processHandler.addParameter(STYLE_VIA_FILE);
         processHandler.addParameter(FALLBACK_STYLE_CHROMIUM);
         processHandler.addParameter(OUTPUT_REPLACEMENTS_XML);
-        if (region != null) {
-            processHandler.addParameter("-offset=" + region.getOffset());
-            processHandler.addParameter("-length=" + region.getLength());
+        if (regions != null) {
+            for (IRegion region : regions) {
+                processHandler.addParameter("-offset=" + region.getOffset());
+                processHandler.addParameter("-length=" + region.getLength());
+            }
         }
     }
 
@@ -282,5 +285,4 @@ public abstract class CodeFormatterBase extends CodeFormatter {
             return new File(root, "A.java").getAbsolutePath();
         }
     }
-
 }
