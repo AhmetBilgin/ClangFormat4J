@@ -2,7 +2,7 @@
 .classpath
 .DS_Store
 *.swp
-META-INF/
+bin/
 target/
 .settings/
 .metadata/

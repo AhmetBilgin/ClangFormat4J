@@ -14,10 +14,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -105,6 +110,29 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         }
 
         return null;
+    }
+
+    public void formatAndApply(IDocument doc, String path) {
+        TextEdit res = format(doc.get(), path, null);
+
+        if (res == null) {
+            return;
+        }
+
+        IDocumentUndoManager manager = DocumentUndoManagerRegistry.getDocumentUndoManager(doc);
+        manager.beginCompoundChange();
+
+        try {
+            res.apply(doc);
+        }
+        catch (MalformedTreeException e) {
+            CppStyle.log("Failed to apply change", e);
+        }
+        catch (BadLocationException e) {
+            CppStyle.log("Failed to apply change", e);
+        }
+
+        manager.endCompoundChange();
     }
 
     private void addpParameters(ProcessHandler processHandler, String clangFormatPath, String path, IRegion region) {
