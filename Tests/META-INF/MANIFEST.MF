@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: Tests
-Bundle-Version: 1.0.0.0
+Bundle-Version: 1.0.0.2
 Bundle-ClassPath: Tests.jar
 Export-Package: org.clangformat4j.tests
 Require-Bundle: org.wangzw.clang-format4j,
@@ -22,3 +22,4 @@ Require-Bundle: org.wangzw.clang-format4j,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.junit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
