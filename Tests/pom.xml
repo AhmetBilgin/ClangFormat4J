@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>clang-format4j</groupId>
+    <artifactId>clang-format4j-parent</artifactId>
+    <version>1.0.0.0</version>
+  </parent>
+  <artifactId>tests</artifactId>
+  <name>Tests</name>
+  <description>Contains classes which can be formatted during tests</description>
+
+  <build>
+  	<plugins>
+  		<plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <configuration>
+			<useUIHarness>false</useUIHarness>
+        	<!-- <bundleStartLevel>
+        		  <bundle>
+				    <id>org.wangzw.clang-format4j</id>
+				    <level>2</level>
+				    <autoStart>true</autoStart>
+				  </bundle>
+        		  <bundle>
+				    <id>org.eclipse.ui.console</id>
+				    <level>2</level>
+				    <autoStart>true</autoStart>
+				  </bundle>
+        	</bundleStartLevel>
+
+        	<defaultStartLevel>
+			    <level>2</level>
+			    <autoStart>true</autoStart>
+		  </defaultStartLevel> -->
+
+        </configuration>
+      </plugin>
+  	</plugins>
+  </build>
+
+</project>
