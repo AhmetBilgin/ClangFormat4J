@@ -61,6 +61,14 @@ public class ReplacementFormatter extends CodeFormatterBase {
         catch (ParserConfigurationException exception) {
             logAndDialogError("Parser problem", exception);
         }
+        finally {
+            try {
+                inputStream.close();
+            }
+            catch (IOException e) {
+                logError(e.getMessage(), e);
+            }
+        }
         return replacementHandler;
     }
 

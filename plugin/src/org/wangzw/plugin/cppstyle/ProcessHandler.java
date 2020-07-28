@@ -14,7 +14,7 @@ public abstract class ProcessHandler {
 
     protected Process process;
 
-    List<String> commands = new ArrayList<>();
+    private List<String> commands = new ArrayList<>();
 
     private String source;
 
@@ -42,10 +42,11 @@ public abstract class ProcessHandler {
     }
 
     private void pipeSourceCodeToProcess(Process process, String sourceCode) throws IOException {
-        OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream());
-        output.write(sourceCode);
-        output.flush();
-        output.close();
+        try (OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream())) {
+            output.write(sourceCode);
+            output.flush();
+            output.close();
+        }
     }
 
     public ProcessHandler addParameter(String parameter) {
@@ -56,18 +57,19 @@ public abstract class ProcessHandler {
     protected abstract void handleInputStream() throws IOException;
 
     protected void handleErrorStream() throws IOException {
-        InputStreamReader error = new InputStreamReader(process.getErrorStream());
-        final char[] buffer = new char[1024];
-        errout = new StringBuilder();
+        try (InputStreamReader error = new InputStreamReader(process.getErrorStream())) {
+            final char[] buffer = new char[1024];
+            errout = new StringBuilder();
 
-        for (;;) {
-            int rsz = error.read(buffer, 0, buffer.length);
+            for (;;) {
+                int rsz = error.read(buffer, 0, buffer.length);
 
-            if (rsz < 0) {
-                break;
+                if (rsz < 0) {
+                    break;
+                }
+
+                errout.append(buffer, 0, rsz);
             }
-
-            errout.append(buffer, 0, rsz);
         }
     }
 

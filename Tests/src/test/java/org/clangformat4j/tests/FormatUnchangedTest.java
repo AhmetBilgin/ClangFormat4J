@@ -51,14 +51,14 @@ public class FormatUnchangedTest {
     }
 
     private static void setClangFormatExecutablePath() {
-        CppStyle.getDefault().getPreferenceStore().setValue(CppStyleConstants.CLANG_FORMAT_PATH,
-                CLANG_FORMAT_EXECUTABLE_FILE.getAbsolutePath());
+        CppStyle.getDefault().getPreferenceStore().setValue(
+                CppStyleConstants.CLANG_FORMAT_PATH, CLANG_FORMAT_EXECUTABLE_FILE.getAbsolutePath());
     }
 
     private static void assertClangFormatExecutableExists() {
-        String msgClangFormatNotFound =
-                String.format("Please configure your clang-format path within %s " + " currently set to %s",
-                        FormatUnchangedTest.class.getName(), CLANG_FORMAT_EXECUTABLE_FILE.getAbsolutePath());
+        String msgClangFormatNotFound = String.format("Please configure your clang-format path within %s "
+                        + " currently set to %s",
+                FormatUnchangedTest.class.getName(), CLANG_FORMAT_EXECUTABLE_FILE.getAbsolutePath());
         assertTrue(msgClangFormatNotFound, CLANG_FORMAT_EXECUTABLE_FILE.exists());
     }
 
@@ -90,11 +90,12 @@ public class FormatUnchangedTest {
 
         String referenceFormattedContent = referenceDocument.get();
         String testedFormattedContent = formattedDocument.get();
+
         checkDocumentsAreEqual(javaFile, referenceFormattedContent, testedFormattedContent);
     }
 
-    private void checkDocumentsAreEqual(File javaFile, String referenceFormattedContent,
-            String testedFormattedContent) {
+    private void checkDocumentsAreEqual(
+            File javaFile, String referenceFormattedContent, String testedFormattedContent) {
         if (!referenceFormattedContent.equals(testedFormattedContent)) {
             File fileThatDiffersWhenFormatted = new File(javaFile.getPath());
             wronglyChangedFiles.add(fileThatDiffersWhenFormatted);
@@ -127,8 +128,8 @@ public class FormatUnchangedTest {
         }
 
         int expectedFilesThatDiffer = 0;
-        assertEquals("There should be no formatted files that differ", expectedFilesThatDiffer,
-                wronglyChangedFiles.size());
+        assertEquals(
+                "There should be no formatted files that differ", expectedFilesThatDiffer, wronglyChangedFiles.size());
     }
 
     private String getContent(File javaFile) {
