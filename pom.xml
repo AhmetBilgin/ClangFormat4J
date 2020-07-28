@@ -21,37 +21,43 @@
 		<module>feature</module>
 		<module>update</module>
 		<module>targetplatform</module>
-		<module>tests</module>
+		<!-- <module>tests</module> -->
 	</modules>
 
-	<repositories>
-<!-- 		<repository>
-			<id>eclipse</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/2019-06</url>
-		</repository> -->
-		<!--
-		<repository>
-			<id>eclipse-updates-4.12</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/4.12</url>
-		</repository>
-		-->
-	</repositories>
-
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>target-platform-configuration</artifactId>
+					<version>${tycho.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-maven-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<extensions>true</extensions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho.version}</version>
 				<configuration>
 					<resolver>p2</resolver>
 					<target>

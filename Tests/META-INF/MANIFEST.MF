@@ -21,4 +21,4 @@ Require-Bundle: org.wangzw.clang-format4j,
  org.eclipse.core.filesystem,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.junit;bundle-version="4.12.0"
+ org.junit
