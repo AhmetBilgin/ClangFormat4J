@@ -12,12 +12,8 @@ import java.util.Map;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -62,6 +58,10 @@ public class ClangFormatFormatter extends CodeFormatter {
         IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 
         String path = ((IFileEditorInput)editor.getEditorInput()).getFile().getLocation().toOSString();
+        formatAndApply(doc, path);
+    }
+
+    public void formatAndApply(IDocument doc, String path) {
         TextEdit res = format(doc.get(), path, null);
 
         if (res == null) {
@@ -297,15 +297,16 @@ public class ClangFormatFormatter extends CodeFormatter {
             }
         }
 
-        //        ITranslationUnit tu =
-        //        (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
+        // ITranslationUnit tu =
+        // (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
         //
-        //        if (tu == null) {
-        //            IFile file = (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-        //            if (file != null) {
-        //                tu = (ITranslationUnit)CoreModel.getDefault().create(file);
-        //            }
-        //        }
+        // if (tu == null) {
+        // IFile file =
+        // (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
+        // if (file != null) {
+        // tu = (ITranslationUnit)CoreModel.getDefault().create(file);
+        // }
+        // }
 
         // added
         err.println("Not yet implemented: getSourceFilePath from CompilationUnit");
