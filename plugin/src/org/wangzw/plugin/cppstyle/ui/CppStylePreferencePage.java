@@ -23,6 +23,7 @@ import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     private FileFieldEditor clangFormatPath = null;
+    private FileFieldEditor clangFormatStylePath = null;
 
     public CppStylePreferencePage() {
         super(GRID);
@@ -39,6 +40,9 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         clangFormatPath =
                 new FileFieldEditor(CppStyleConstants.CLANG_FORMAT_PATH, "Clang-format path:", getFieldEditorParent());
         addField(clangFormatPath);
+        clangFormatStylePath = new FileFieldEditor(
+                CppStyleConstants.CLANG_FORMAT_STYLE_PATH, "Clang-format style path:", getFieldEditorParent());
+        addField(clangFormatStylePath);
     }
 
     @Override
@@ -51,7 +55,10 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
 
         if (event.getProperty().equals(FieldEditor.VALUE)) {
             if (event.getSource() == clangFormatPath) {
-                clangFormatPathChange(event.getNewValue().toString());
+                clangFormatPathChange("Clang-format path", event.getNewValue().toString());
+            }
+            else if (event.getSource() == clangFormatStylePath) {
+                clangFormatPathChange("Clang-format style path", event.getNewValue().toString());
             }
 
             checkState();
@@ -63,10 +70,10 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         return file.exists() && !file.isDirectory();
     }
 
-    private void clangFormatPathChange(String newPath) {
+    private void clangFormatPathChange(String propertyLable, String newPath) {
         if (!checkPathExist(newPath)) {
             this.setValid(false);
-            this.setErrorMessage("Clang-format path \"" + newPath + "\" does not exist");
+            this.setErrorMessage(propertyLable + " \"" + newPath + "\" does not exist");
         }
         else {
             this.setValid(true);

@@ -1,6 +1,6 @@
 package org.wangzw.plugin.cppstyle;
 
-import static org.wangzw.plugin.cppstyle.replacement.Logger.*;
+import static org.wangzw.plugin.cppstyle.replacement.Logger.logInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
 import org.eclipse.jface.text.BadLocationException;
@@ -152,8 +151,12 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         }
     }
 
-    protected static String getClangFormatPath() {
+    protected String getClangFormatPath() {
         return CppStyle.getDefault().getPreferenceStore().getString(CppStyleConstants.CLANG_FORMAT_PATH);
+    }
+
+    protected String getClangFormatStylePath() {
+        return CppStyle.getDefault().getPreferenceStore().getString(CppStyleConstants.CLANG_FORMAT_STYLE_PATH);
     }
 
     private static IPath getSourceFilePathFromEditorInput(IEditorInput editorInput) {
@@ -263,26 +266,11 @@ public abstract class CodeFormatterBase extends CodeFormatter {
             }
         }
 
-        // ITranslationUnit tu =
-        // (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
-        //
-        // if (tu == null) {
-        // IFile file =
-        // (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-        // if (file != null) {
-        // tu = (ITranslationUnit)CoreModel.getDefault().create(file);
-        // }
-        // }
-
-        // added
-        err.println("Not yet implemented: getSourceFilePath from CompilationUnit");
-        ICompilationUnit tu = null;
-        if (tu != null) {
-            return tu.getResource().getRawLocation().toOSString();
-        }
-        else {
+        String fallbackStylePath = getClangFormatStylePath();
+        if (fallbackStylePath == null) {
             String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-            return new File(root, "A.java").getAbsolutePath();
+            fallbackStylePath = new File(root, "A.java").getAbsolutePath();
         }
+        return fallbackStylePath;
     }
 }
