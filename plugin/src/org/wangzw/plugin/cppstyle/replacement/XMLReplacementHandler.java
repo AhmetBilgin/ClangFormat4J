@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.eclipse.text.edits.ReplaceEdit;
 import org.xml.sax.Attributes;
-import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.DefaultHandler2;
 
 public class XMLReplacementHandler extends DefaultHandler2 {
 
@@ -15,11 +15,14 @@ public class XMLReplacementHandler extends DefaultHandler2 {
 
     // offset of the currently opened replacement
     private int currentOffset;
+
     // length of the currently opened replacement
     private int currentLength;
 
     private final static String REPLACEMENT_TAG_NAME = "replacement";
+
     private final static String OFFSET_ATTRIBUTE_NAME = "offset";
+
     private final static String LENGTH_ATTRIBUTE_NAME = "length";
 
     private StringBuilder charactersBuilder;
@@ -39,7 +42,7 @@ public class XMLReplacementHandler extends DefaultHandler2 {
     @Override
     public void startDocument() throws SAXException {
         // reset the edits list
-        edits = new ArrayList<ReplaceEdit>();
+        edits = new ArrayList<>();
     }
 
     @Override
@@ -69,9 +72,10 @@ public class XMLReplacementHandler extends DefaultHandler2 {
                 if (offsetAttributeString != null) {
                     currentOffset = Integer.parseInt(offsetAttributeString);
                 }
-                else
+                else {
                     throw new SAXException(
                             "Missing " + OFFSET_ATTRIBUTE_NAME + " attribute in " + REPLACEMENT_TAG_NAME + " element");
+                }
             }
             {
                 String lengthAttributeString = attributes.getValue(LENGTH_ATTRIBUTE_NAME);

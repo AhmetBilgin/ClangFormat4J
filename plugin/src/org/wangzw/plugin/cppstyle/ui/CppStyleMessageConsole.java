@@ -36,8 +36,7 @@ public class CppStyleMessageConsole extends MessageConsole {
         }
     }
 
-    public static final String ERROR_MARKER_CATEGORY = "org.wangzw.clang-format4j.ERROR_MARKER_POSITION";
-    ;
+    public static final String ERROR_MARKER_CATEGORY = "org.wangzw.clang-format4j.ERROR_MARKER_POSITION";;
 
     private CppStyleConsolePatternMatchListener listener = null;
 
@@ -167,7 +166,7 @@ public class CppStyleMessageConsole extends MessageConsole {
         return err;
     }
 
-    public static Display getStandardDisplay() {
+    private static Display getStandardDisplay() {
         Display display = Display.getCurrent();
         if (display == null) {
             display = Display.getDefault();

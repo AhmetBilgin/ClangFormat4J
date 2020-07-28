@@ -148,9 +148,7 @@ public class Formatter extends CodeFormatter {
             logAndDialogError("clang-format call returned errors",
                     new Exception(String.format("%s\n\nfrom error stream for call %s", err, Arrays.toString(args))));
         }
-        int textOffset = 0;
-        int textLength = source.length();
-        MultiTextEdit textEdit = new MultiTextEdit(); /* new MultiTextEdit(textOffset, textLength); */
+        MultiTextEdit textEdit = new MultiTextEdit();
         TextEdit edits[] = new TextEdit[0];
         edits = replacementHandler.getEdits().toArray(edits);
 
