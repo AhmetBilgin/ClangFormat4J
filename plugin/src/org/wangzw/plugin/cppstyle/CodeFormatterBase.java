@@ -36,7 +36,7 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
-abstract class CodeFormatterBase extends CodeFormatter {
+public abstract class CodeFormatterBase extends CodeFormatter {
 
     private static final String ASSUME_FILENAME = "-assume-filename=";
 
@@ -48,7 +48,7 @@ abstract class CodeFormatterBase extends CodeFormatter {
 
     Map<String, String> options;
 
-    private MessageConsoleStream err = null;
+    protected MessageConsoleStream err = null;
 
     public CodeFormatterBase() {
         super();
@@ -218,7 +218,7 @@ abstract class CodeFormatterBase extends CodeFormatter {
         }
     }
 
-    private boolean checkClangFormat(String clangformat) {
+    public boolean checkClangFormat(String clangformat) {
         if (clangformat == null) {
             err.println("clang-format is not specified.");
             return false;
@@ -239,7 +239,7 @@ abstract class CodeFormatterBase extends CodeFormatter {
         return true;
     }
 
-    private String getSourceFilePath() {
+    protected String getSourceFilePath() {
         IWorkbench wb = PlatformUI.getWorkbench();
         if (wb != null) {
             IWorkbenchWindow window = wb.getActiveWorkbenchWindow();

@@ -21,7 +21,7 @@ import org.wangzw.plugin.cppstyle.CppStyle;
  * preferences can be accessed directly via the preference store.
  */
 
-class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     private FileFieldEditor clangFormatPath = null;
 
     public CppStylePreferencePage() {

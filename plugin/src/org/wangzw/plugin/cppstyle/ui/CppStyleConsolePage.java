@@ -12,13 +12,10 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsolePage;
 import org.eclipse.ui.console.TextConsoleViewer;
 
-class CppStyleConsolePage extends TextConsolePage {
+public class CppStyleConsolePage extends TextConsolePage {
     private CppStyleConsoleViewer viewer = null;
-
     private CppStyleMessageConsole console = null;
-
     private ShowWhenContentChangesAction fStdOut;
-
     private ShowWhenContentChangesAction fStdErr;
 
     public CppStyleConsolePage(CppStyleMessageConsole console, IConsoleView view) {

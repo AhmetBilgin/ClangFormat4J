@@ -14,7 +14,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.TextConsoleViewer;
 import org.wangzw.plugin.cppstyle.CppStyle;
 
-class CppStyleConsoleViewer extends TextConsoleViewer {
+public class CppStyleConsoleViewer extends TextConsoleViewer {
     private CppStyleMessageConsole console = null;
 
     private IDocumentListener documentListener = new IDocumentListener() {
