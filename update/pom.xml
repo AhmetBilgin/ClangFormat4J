@@ -5,7 +5,7 @@
   <parent>
     <groupId>clang-format4j</groupId>
     <artifactId>clang-format4j-parent</artifactId>
-    <version>1.0.0.3</version>
+    <version>1.0.0.4</version>
   </parent>
   <artifactId>update</artifactId>
   <packaging>eclipse-update-site</packaging>
