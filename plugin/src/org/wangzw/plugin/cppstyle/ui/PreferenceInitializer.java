@@ -13,6 +13,5 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         IPreferenceStore store = CppStyle.getDefault().getPreferenceStore();
         store.setDefault(CppStyleConstants.CLANG_FORMAT_PATH, "");
-        store.setDefault(CppStyleConstants.CLANG_FORMAT_STYLE_PATH, "");
     }
 }
