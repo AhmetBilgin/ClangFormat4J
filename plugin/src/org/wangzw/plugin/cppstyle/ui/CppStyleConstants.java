@@ -8,6 +8,12 @@ public class CppStyleConstants {
 
     public static final String CLANG_FORMAT_PATH = "cppstyle.clangformat.path";
 
+    public static final String CLANG_FORMAT_STYLE_PATH = "cppstyle.clangformat.style.path";
+
+    public static final String LABEL_CLANG_FORMAT_PATH = "Clang-format path:";
+
+    public static final String LABEL_CLANG_FORMAT_STYLE_PATH = "Clang-format style path:";
+
     public static final String PROJECTS_PECIFIC_PROPERTY = "cppstyle.ENABLE_PROJECTS_PECIFIC";
 
     public static final String ENABLE_CLANGFORMAT_PROPERTY = "cppstyle.ENABLE_CLANGFORMAT";

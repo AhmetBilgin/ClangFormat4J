@@ -1,5 +1,7 @@
 package org.wangzw.plugin.cppstyle.ui;
 
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
+
 import java.io.File;
 
 import org.eclipse.jface.preference.FieldEditor;
@@ -23,6 +25,7 @@ import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     private FileFieldEditor clangFormatPath = null;
+    private FileFieldEditor clangFormatStylePath = null;
 
     public CppStylePreferencePage() {
         super(GRID);
@@ -36,9 +39,11 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
      */
     @Override
     public void createFieldEditors() {
-        clangFormatPath =
-                new FileFieldEditor(CppStyleConstants.CLANG_FORMAT_PATH, "Clang-format path:", getFieldEditorParent());
+        clangFormatPath = new FileFieldEditor(CLANG_FORMAT_PATH, LABEL_CLANG_FORMAT_PATH, getFieldEditorParent());
         addField(clangFormatPath);
+        clangFormatStylePath =
+                new FileFieldEditor(CLANG_FORMAT_STYLE_PATH, LABEL_CLANG_FORMAT_STYLE_PATH, getFieldEditorParent());
+        addField(clangFormatStylePath);
     }
 
     @Override
@@ -50,8 +55,12 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         super.propertyChange(event);
 
         if (event.getProperty().equals(FieldEditor.VALUE)) {
+            String newValue = event.getNewValue().toString();
             if (event.getSource() == clangFormatPath) {
-                clangFormatPathChange(event.getNewValue().toString());
+                pathChange(LABEL_CLANG_FORMAT_PATH, newValue);
+            }
+            else if (event.getSource() == clangFormatStylePath) {
+                pathChange(LABEL_CLANG_FORMAT_STYLE_PATH, newValue);
             }
 
             checkState();
@@ -63,10 +72,10 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         return file.exists() && !file.isDirectory();
     }
 
-    private void clangFormatPathChange(String newPath) {
+    private void pathChange(String propertyLable, String newPath) {
         if (!checkPathExist(newPath)) {
             this.setValid(false);
-            this.setErrorMessage("Clang-format path \"" + newPath + "\" does not exist");
+            this.setErrorMessage(propertyLable + " \"" + newPath + "\" does not exist");
         }
         else {
             this.setValid(true);

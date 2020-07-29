@@ -1,6 +1,7 @@
 package org.wangzw.plugin.cppstyle;
 
 import static org.wangzw.plugin.cppstyle.replacement.Logger.*;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,6 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
 import org.eclipse.jface.text.BadLocationException;
@@ -33,12 +33,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.editors.text.ILocationProvider;
-import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
 public abstract class CodeFormatterBase extends CodeFormatter {
 
     private static final String ASSUME_FILENAME = "-assume-filename=";
+
+    private static final String ASSUME_FILENAME_JAVA = "A.java";
 
     private static final String STYLE_VIA_FILE = "-style=file";
 
@@ -66,7 +67,7 @@ public abstract class CodeFormatterBase extends CodeFormatter {
 
     @Override
     public TextEdit format(int kind, String source, IRegion[] regions, int indentationLevel, String lineSeparator) {
-        TextEdit retval = format(source, getSourceFilePath(), regions);
+        TextEdit retval = format(source, getAssumeFilenamePath(), regions);
         return retval != null ? retval : new MultiTextEdit();
     }
 
@@ -152,8 +153,12 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         }
     }
 
-    protected static String getClangFormatPath() {
-        return CppStyle.getDefault().getPreferenceStore().getString(CppStyleConstants.CLANG_FORMAT_PATH);
+    protected String getClangFormatPath() {
+        return CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_PATH);
+    }
+
+    protected String getClangFormatStylePath() {
+        return CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_STYLE_PATH);
     }
 
     private static IPath getSourceFilePathFromEditorInput(IEditorInput editorInput) {
@@ -242,7 +247,35 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         return true;
     }
 
-    protected String getSourceFilePath() {
+    protected String getAssumeFilenamePath() {
+        String assumeFilenamePath = getClangFormatStylePath();
+
+        if (fileExists(assumeFilenamePath)) {
+            assumeFilenamePath = stylePathToAssumeFilenamePath(assumeFilenamePath);
+            return assumeFilenamePath;
+        }
+
+        assumeFilenamePath = getJavaFilePathFromActiveEditor();
+        if (fileExists(assumeFilenamePath)) {
+            return assumeFilenamePath;
+        }
+
+        assumeFilenamePath = useWorkspaceFallback();
+        return assumeFilenamePath;
+    }
+
+    private boolean fileExists(String clangFormatStylePath) {
+        return clangFormatStylePath != null && !clangFormatStylePath.isEmpty()
+                && new File(clangFormatStylePath).exists();
+    }
+
+    private String stylePathToAssumeFilenamePath(String clangFormatStylePath) {
+        File assumeFile = new File(new File(clangFormatStylePath).getParentFile(), ASSUME_FILENAME_JAVA);
+        return assumeFile.getAbsolutePath();
+    }
+
+    private String getJavaFilePathFromActiveEditor() {
+        String javaFilePath = null;
         IWorkbench wb = PlatformUI.getWorkbench();
         if (wb != null) {
             IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
@@ -255,34 +288,19 @@ public abstract class CodeFormatterBase extends CodeFormatter {
                         if (editorInput != null) {
                             IPath filePath = getSourceFilePathFromEditorInput(editorInput);
                             if (filePath != null) {
-                                return filePath.toOSString();
+                                javaFilePath = filePath.toOSString();
                             }
                         }
                     }
                 }
             }
         }
+        return javaFilePath;
+    }
 
-        // ITranslationUnit tu =
-        // (ITranslationUnit)options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
-        //
-        // if (tu == null) {
-        // IFile file =
-        // (IFile)options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
-        // if (file != null) {
-        // tu = (ITranslationUnit)CoreModel.getDefault().create(file);
-        // }
-        // }
-
-        // added
-        err.println("Not yet implemented: getSourceFilePath from CompilationUnit");
-        ICompilationUnit tu = null;
-        if (tu != null) {
-            return tu.getResource().getRawLocation().toOSString();
-        }
-        else {
-            String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-            return new File(root, "A.java").getAbsolutePath();
-        }
+    private String useWorkspaceFallback() {
+        String workspaceRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+        String assumeFilePath = new File(workspaceRoot, ASSUME_FILENAME_JAVA).getAbsolutePath();
+        return assumeFilePath;
     }
 }
