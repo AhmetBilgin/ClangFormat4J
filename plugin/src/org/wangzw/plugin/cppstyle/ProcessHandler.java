@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.text.edits.MultiTextEdit;
@@ -45,7 +46,6 @@ public abstract class ProcessHandler {
         try (OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream())) {
             output.write(sourceCode);
             output.flush();
-            output.close();
         }
     }
 
@@ -82,13 +82,19 @@ public abstract class ProcessHandler {
     }
 
     public boolean success() throws InterruptedException {
-        code = process.waitFor();
-        return code == 0;
+        int timeout = 15;
+        boolean success = process.waitFor(timeout, TimeUnit.SECONDS);
+        if (success) {
+            code = process.exitValue();
+        }
+        else {
+            errout.append(String.format("Waiting time elapsed: timeout after %ds", timeout));
+        }
+        return success;
     }
 
     public boolean hasErrors() {
         return errout.length() > 0;
-
     }
 
     MultiTextEdit getTextEdit() {
