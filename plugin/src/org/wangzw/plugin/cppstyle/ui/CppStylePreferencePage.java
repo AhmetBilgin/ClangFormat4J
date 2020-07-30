@@ -7,10 +7,12 @@ import java.io.File;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.wangzw.plugin.cppstyle.CppStyle;
+import org.wangzw.plugin.cppstyle.EnvironmentVariableExpander;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -41,8 +43,7 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
     public void createFieldEditors() {
         clangFormatPath = new FileFieldEditor(CLANG_FORMAT_PATH, LABEL_CLANG_FORMAT_PATH, getFieldEditorParent());
         addField(clangFormatPath);
-        clangFormatStylePath =
-                new FileFieldEditor(CLANG_FORMAT_STYLE_PATH, LABEL_CLANG_FORMAT_STYLE_PATH, getFieldEditorParent());
+        clangFormatStylePath = createClangFormatStylePathEditorField();
         addField(clangFormatStylePath);
     }
 
@@ -60,6 +61,10 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
                 pathChange(LABEL_CLANG_FORMAT_PATH, newValue);
             }
             else if (event.getSource() == clangFormatStylePath) {
+                String expandEnvVar = EnvironmentVariableExpander.expandEnvVar(newValue);
+                if (!newValue.equals(expandEnvVar)) {
+                    newValue = expandEnvVar;
+                }
                 pathChange(LABEL_CLANG_FORMAT_STYLE_PATH, newValue);
             }
 
@@ -82,4 +87,52 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
             this.setErrorMessage(null);
         }
     }
+
+private FileFieldEditor createClangFormatStylePathEditorField() {
+    return new FileFieldEditor(CLANG_FORMAT_STYLE_PATH, LABEL_CLANG_FORMAT_STYLE_PATH, getFieldEditorParent()) {
+        @Override
+        protected boolean checkState() {
+            String msg = null;
+
+            String path = EnvironmentVariableExpander.expandEnvVar(getTextControl().getText());
+            if (path != null) {
+                path = path.trim();
+            }
+            else {
+                path = ""; //$NON-NLS-1$
+            }
+            if (path.length() == 0) {
+                if (!isEmptyStringAllowed()) {
+                    msg = getErrorMessage();
+                }
+            }
+            else {
+                File file = new File(path);
+                if (file.isFile()) {
+                    if (true && !file.isAbsolute()) {
+                        msg = JFaceResources.getString("FileFieldEditor.errorMessage2"); //$NON-NLS-1$
+                    }
+                }
+                else {
+                    msg = getErrorMessage();
+                }
+            }
+
+            if (msg != null) { // error
+                showErrorMessage(msg);
+                return false;
+            }
+
+            if (doCheckState()) { // OK!
+                clearErrorMessage();
+                return true;
+            }
+            msg = getErrorMessage(); // subclass might have changed it in the #doCheckState()
+            if (msg != null) {
+                showErrorMessage(msg);
+            }
+            return false;
+        }
+    };
+}
 }

@@ -158,7 +158,9 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     protected String getClangFormatStylePath() {
-        return CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_STYLE_PATH);
+        String stylePath = CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_STYLE_PATH);
+        String resolvedStylePath = EnvironmentVariableExpander.expandEnvVar(stylePath);
+        return resolvedStylePath;
     }
 
     private static IPath getSourceFilePathFromEditorInput(IEditorInput editorInput) {
