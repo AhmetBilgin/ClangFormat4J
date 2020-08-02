@@ -13,6 +13,10 @@ import org.eclipse.text.edits.MultiTextEdit;
 
 public abstract class ProcessHandler {
 
+    protected static final TimeUnit SECONDS = TimeUnit.SECONDS;
+
+    protected static final int TIMEOUT = 15;
+
     protected Process process;
 
     private List<String> commands = new ArrayList<>();
@@ -23,7 +27,7 @@ public abstract class ProcessHandler {
 
     protected MultiTextEdit textEdit;
 
-    private StringBuilder errout;
+    protected StringBuilder errout;
 
     public ProcessHandler(String source) {
         this.source = source;
@@ -82,13 +86,12 @@ public abstract class ProcessHandler {
     }
 
     public boolean success() throws InterruptedException {
-        int timeout = 15;
-        boolean success = process.waitFor(timeout, TimeUnit.SECONDS);
+        boolean success = process.waitFor(TIMEOUT, SECONDS);
         if (success) {
             code = process.exitValue();
         }
         else {
-            errout.append(String.format("Waiting time elapsed: timeout after %ds", timeout));
+            errout.append(String.format("Waiting time elapsed: timeout after %ds", TIMEOUT));
         }
         return success;
     }

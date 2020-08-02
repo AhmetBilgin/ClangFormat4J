@@ -1,7 +1,8 @@
 package org.wangzw.plugin.cppstyle;
 
-import static org.wangzw.plugin.cppstyle.replacement.Logger.*;
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
+import static org.wangzw.plugin.cppstyle.replacement.Logger.logInfo;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_PATH;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_STYLE_PATH;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,9 +89,15 @@ public abstract class CodeFormatterBase extends CodeFormatter {
             logInfo(String.format("Using style-file: %s", confPath));
         }
 
+        return handleProcess(source, path, regions, clangFormatPath);
+    }
+
+    protected TextEdit handleProcess(
+            String source, String assumeFilenamePath, IRegion[] regions, String clangFormatPath) {
+        MultiTextEdit edit = null;
         try {
             ProcessHandler processHandler = createProcessHandler(source);
-            addpParameters(processHandler, clangFormatPath, path, regions);
+            addpParameters(processHandler, clangFormatPath, assumeFilenamePath, regions);
             processHandler.start();
             processHandler.handleInputStream();
             processHandler.handleErrorStream();
@@ -98,11 +105,10 @@ public abstract class CodeFormatterBase extends CodeFormatter {
             if (!processHandler.success() || processHandler.hasErrors()) {
                 err.println("clang-format return error (" + processHandler.getCode() + ").");
                 err.println(processHandler.getError());
-                return null;
             }
-
-            MultiTextEdit edit = processHandler.getTextEdit();
-            return edit;
+            else {
+                edit = processHandler.getTextEdit();
+            }
         }
         catch (IOException e) {
             CppStyle.log("Failed to format code", e);
@@ -111,7 +117,7 @@ public abstract class CodeFormatterBase extends CodeFormatter {
             CppStyle.log("Failed to format code", e);
         }
 
-        return null;
+        return edit;
     }
 
     public void formatAndApply(IDocument doc, String path) {
@@ -137,9 +143,10 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         manager.endCompoundChange();
     }
 
-    private void addpParameters(ProcessHandler processHandler, String clangFormatPath, String path, IRegion[] regions) {
+    private void addpParameters(
+            ProcessHandler processHandler, String clangFormatPath, String assumeFilenamePath, IRegion[] regions) {
         processHandler.addParameter(clangFormatPath);
-        processHandler.addParameter(ASSUME_FILENAME + path);
+        processHandler.addParameter(ASSUME_FILENAME + assumeFilenamePath);
         // make clang-format do its own search for the configuration, but fall back to
         // Chromium.
         processHandler.addParameter(STYLE_VIA_FILE);
