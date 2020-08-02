@@ -84,7 +84,7 @@ public class ClangFormatFormatter extends CodeFormatter {
         manager.endCompoundChange();
     }
 
-    private TextEdit format(String source, String path, IRegion region) {
+    protected TextEdit format(String source, String path, IRegion region) {
         String clangFormatPath = getClangFormatPath();
         if (checkClangFormat(clangFormatPath) == false) {
             return null;
@@ -125,6 +125,10 @@ public class ClangFormatFormatter extends CodeFormatter {
         String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
         builder.directory(new File(root));
 
+        return handleProcess(source, builder);
+    }
+
+    protected TextEdit handleProcess(String source, ProcessBuilder builder) {
         try {
             Process process = builder.start();
             OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream());

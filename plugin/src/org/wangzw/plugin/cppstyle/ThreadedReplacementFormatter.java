@@ -1,6 +1,7 @@
 package org.wangzw.plugin.cppstyle;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class ThreadedReplacementFormatter extends ReplacementFormatter {
 
@@ -13,5 +14,9 @@ public class ThreadedReplacementFormatter extends ReplacementFormatter {
                 textEdit = createEdit(process);
             }
         };
+    }
+
+    protected static ThreadPoolExecutor getThreadPoolExecuter() {
+        return (ThreadPoolExecutor)ThreadedProcessHandler.executorService;
     }
 }

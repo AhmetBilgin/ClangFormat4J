@@ -9,9 +9,10 @@ import java.util.concurrent.TimeoutException;
 
 public abstract class ThreadedProcessHandler extends ProcessHandler {
 
-    public static final int POOL_SIZE = 4;
+    public static final int POOL_SIZE = 0;
 
-    protected static final ExecutorService executorService = Executors.newFixedThreadPool(POOL_SIZE);
+    static final ExecutorService executorService =
+            Executors.newCachedThreadPool(); // Executors.newFixedThreadPool(POOL_SIZE);
 
     private static final String SUCCCESS = "succcess";
 
