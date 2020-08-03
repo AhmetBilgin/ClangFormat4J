@@ -9,10 +9,7 @@ import java.util.concurrent.TimeoutException;
 
 public abstract class ThreadedProcessHandler extends ProcessHandler {
 
-    public static final int POOL_SIZE = 0;
-
-    static final ExecutorService executorService =
-            Executors.newCachedThreadPool(); // Executors.newFixedThreadPool(POOL_SIZE);
+    static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private static final String SUCCCESS = "succcess";
 
@@ -59,13 +56,16 @@ public abstract class ThreadedProcessHandler extends ProcessHandler {
         boolean success = false;
         try {
             Boolean inputFutureReturnValue = inputStreamFuture.get(TIMEOUT, SECONDS);
-            Boolean errorFutureReturnValue = errorStreamFuture.get(TIMEOUT, SECONDS);
+            Boolean errorFutureReturnValue = Boolean.FALSE;
+            if (inputFutureReturnValue) {
+                errorFutureReturnValue = errorStreamFuture.get(TIMEOUT, SECONDS);
+            }
             success = inputFutureReturnValue && errorFutureReturnValue;
         }
         catch (ExecutionException | TimeoutException e) {
             logException(SUCCCESS, e);
         }
-        return success && super.success();
+        return super.success() && success;
     }
 
     private void logException(String methodName, Throwable e) {

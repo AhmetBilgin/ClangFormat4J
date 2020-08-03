@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.wangzw.plugin.cppstyle.ThreadedProcessHandler;
 
 public class FormatterExecutionTimeBenchmark extends AbstractFormatterTestBase {
 
@@ -21,8 +20,7 @@ public class FormatterExecutionTimeBenchmark extends AbstractFormatterTestBase {
 
     private static final String HEADER_SEQUENTIAL = "Time in ns Sequential";
 
-    private static final String HEADER_THREADPOOL =
-            String.format("Time in \u00B5s ThreadPool(%s)", ThreadedProcessHandler.POOL_SIZE);
+    private static final String HEADER_THREADPOOL = "Time in \u00B5s ThreadPool";
 
     private static final String HEADER_DIFF_FORMATTER = "HEADER_DIFF_FORMATTER";
 
