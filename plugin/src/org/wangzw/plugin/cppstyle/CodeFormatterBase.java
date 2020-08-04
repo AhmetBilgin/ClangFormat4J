@@ -15,6 +15,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;
+import org.eclipse.jdt.internal.formatter.TextEditsBuilder;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -34,8 +36,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.editors.text.ILocationProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
+@SuppressWarnings("restriction")
 public abstract class CodeFormatterBase extends CodeFormatter {
 
     private static final String ASSUME_FILENAME = "-assume-filename=";
@@ -47,6 +51,10 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     private static final String FALLBACK_STYLE_CHROMIUM = "-fallback-style=Chromium";
 
     private static final String OUTPUT_REPLACEMENTS_XML = "-output-replacements-xml";
+
+    private static final int INDENTATION_WIDTH = 4;
+
+    private static final int TABSIZE = 8;
 
     Map<String, String> options;
 
@@ -220,9 +228,18 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         return null;
     }
 
+    /**
+     * Implementation from DefaultCodeFormatter
+     */
     @Override
     public String createIndentationString(int indentationLevel) {
-        return super.createIndentationString(indentationLevel);
+        if (indentationLevel < 0) {
+            throw new IllegalArgumentException();
+        }
+        StringBuilder sb = new StringBuilder();
+        int indent = indentationLevel * INDENTATION_WIDTH;
+        TextEditsBuilder.appendIndentationString(sb, DefaultCodeFormatterOptions.SPACE, TABSIZE, indent, 0);
+        return sb.toString();
     }
 
     @Override
