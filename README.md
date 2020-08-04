@@ -3,9 +3,12 @@ ClangFormat4J
 **An Eclipse plugin that integrates the clang-format tool as an alternative Java code formatter.**
 
 ## Description
-A consistent coding style is important for a project.Many developers use Eclipse as a Java IDE, but it is a little difficult to integrate an external formatter tool to Eclipse. People have to switch to a command line and run the tools to format the code.
+A consistent coding style is important for a project. As I experienced huge formatter changes with every Eclipse-IDE update and the eclipse formatter has some bugs which won't be fixed, I forked the CppStyle Eclipse Plugin to support clang-format for Java files.
 
-The expected behavious is that people just format the code fragment by first selecting it and then pressing `Command + Shift + f` on MacOS or `Ctrl + Shift + f` on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what ClangFormat4J does.
+You can format the Java source code by either
+* Saving the file
+* or Selecting the region to format or all of the java file content and then pressing `Ctrl + Shift + f` on Linux and other systems or `Command + Shift + f` on MacOS.
+* or Context-Menu - > Source -> Format
 
 ## Requirement
     clang-format   http://clang.llvm.org/docs/ClangFormat.html
@@ -20,11 +23,11 @@ TODO
 ### Manual
 
 * Build ClangFormat4J with maven first. ```mvn clean verify```
-* Install CppStyle with local update site ```file:///<YOUR_CODE_PATH>/update/target/site```
+* Install ClangFormat4J with local update site ```file:///<YOUR_CODE_PATH>/update/target/site```
 
 Restart Eclipse.
 
-## Configure CppStyle
+## Configure ClangFormat4J
 
 
 To enable ClangFormat4J(clang-format) as default Java code formatter, go to **Preferences -> Java -> Code Style -> Formatter** page and switch **"Code Formatter"** from **[built-in]** to **"ClangFormat4J (clang-format)"**
@@ -45,4 +48,4 @@ To generate the clang-format configuration file **.clang-format**:
 
     clang-format -dump-config -style=Chromium> .clang-format
 
-**If no configure file named .clang-format is found, "-style=Chromium" will be passed to clang-format and Chromium style will be used by default.**
+**If no configuration file named .clang-format is found, "-style=Chromium" will be passed to clang-format and Chromium style will be used by default.**
