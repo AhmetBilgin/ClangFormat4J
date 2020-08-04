@@ -180,7 +180,7 @@ public class CppStyleMessageConsole extends MessageConsole {
         display = Display.getCurrent();
         if (display == null) {
             display = Display.getDefault();
-            display.syncExec(run);
+            display.asyncExec(run);
         }
         else {
             run.run();
