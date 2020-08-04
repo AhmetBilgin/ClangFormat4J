@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>clang-format4j</groupId>
 		<artifactId>clang-format4j-parent</artifactId>
-		<version>1.0.0.5</version>
+		<version>1.0.0.6</version>
 	</parent>
 
 	<name>targetplatform</name>
