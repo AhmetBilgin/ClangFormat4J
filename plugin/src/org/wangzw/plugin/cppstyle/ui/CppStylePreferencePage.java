@@ -1,6 +1,9 @@
 package org.wangzw.plugin.cppstyle.ui;
 
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_PATH;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_STYLE_PATH;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.LABEL_CLANG_FORMAT_PATH;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.LABEL_CLANG_FORMAT_STYLE_PATH;
 
 import java.io.File;
 
@@ -9,6 +12,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.wangzw.plugin.cppstyle.CppStyle;
@@ -41,7 +45,7 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
      */
     @Override
     public void createFieldEditors() {
-        clangFormatPath = new FileFieldEditor(CLANG_FORMAT_PATH, LABEL_CLANG_FORMAT_PATH, getFieldEditorParent());
+        clangFormatPath = createClangPathEditorField();
         addField(clangFormatPath);
         clangFormatStylePath = createClangFormatStylePathEditorField();
         addField(clangFormatStylePath);
@@ -88,51 +92,62 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         }
     }
 
-private FileFieldEditor createClangFormatStylePathEditorField() {
-    return new FileFieldEditor(CLANG_FORMAT_STYLE_PATH, LABEL_CLANG_FORMAT_STYLE_PATH, getFieldEditorParent()) {
-        @Override
-        protected boolean checkState() {
-            String msg = null;
+    private FileFieldEditor createClangPathEditorField() {
+        return createFileFieldEditorWithEnvironmentVariableSupport(
+                CLANG_FORMAT_PATH, LABEL_CLANG_FORMAT_PATH, getFieldEditorParent());
+    }
 
-            String path = EnvironmentVariableExpander.expandEnvVar(getTextControl().getText());
-            if (path != null) {
-                path = path.trim();
-            }
-            else {
-                path = ""; //$NON-NLS-1$
-            }
-            if (path.length() == 0) {
-                if (!isEmptyStringAllowed()) {
-                    msg = getErrorMessage();
+    private FileFieldEditor createClangFormatStylePathEditorField() {
+        return createFileFieldEditorWithEnvironmentVariableSupport(
+                CLANG_FORMAT_STYLE_PATH, LABEL_CLANG_FORMAT_STYLE_PATH, getFieldEditorParent());
+    }
+
+    private FileFieldEditor createFileFieldEditorWithEnvironmentVariableSupport(
+            String preferenceName, String label, Composite parentComposite) {
+        return new FileFieldEditor(preferenceName, label, parentComposite) {
+            @Override
+            protected boolean checkState() {
+                String msg = null;
+
+                String path = EnvironmentVariableExpander.expandEnvVar(getTextControl().getText());
+                if (path != null) {
+                    path = path.trim();
                 }
-            }
-            else {
-                File file = new File(path);
-                if (file.isFile()) {
-                    if (true && !file.isAbsolute()) {
-                        msg = JFaceResources.getString("FileFieldEditor.errorMessage2"); //$NON-NLS-1$
+                else {
+                    path = ""; //$NON-NLS-1$
+                }
+                if (path.length() == 0) {
+                    if (!isEmptyStringAllowed()) {
+                        msg = getErrorMessage();
                     }
                 }
                 else {
-                    msg = getErrorMessage();
+                    File file = new File(path);
+                    if (file.isFile()) {
+                        if (true && !file.isAbsolute()) {
+                            msg = JFaceResources.getString("FileFieldEditor.errorMessage2"); //$NON-NLS-1$
+                        }
+                    }
+                    else {
+                        msg = getErrorMessage();
+                    }
                 }
-            }
 
-            if (msg != null) { // error
-                showErrorMessage(msg);
+                if (msg != null) { // error
+                    showErrorMessage(msg);
+                    return false;
+                }
+
+                if (doCheckState()) { // OK!
+                    clearErrorMessage();
+                    return true;
+                }
+                msg = getErrorMessage(); // subclass might have changed it in the #doCheckState()
+                if (msg != null) {
+                    showErrorMessage(msg);
+                }
                 return false;
             }
-
-            if (doCheckState()) { // OK!
-                clearErrorMessage();
-                return true;
-            }
-            msg = getErrorMessage(); // subclass might have changed it in the #doCheckState()
-            if (msg != null) {
-                showErrorMessage(msg);
-            }
-            return false;
-        }
-    };
-}
+        };
+    }
 }

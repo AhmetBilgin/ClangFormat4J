@@ -36,7 +36,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.editors.text.ILocationProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
 @SuppressWarnings("restriction")
@@ -169,7 +168,9 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     protected String getClangFormatPath() {
-        return CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_PATH);
+        String clangFormatPath = CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_PATH);
+        String resolvedClangFormatPath = EnvironmentVariableExpander.expandEnvVar(clangFormatPath);
+        return resolvedClangFormatPath;
     }
 
     protected String getClangFormatStylePath() {
