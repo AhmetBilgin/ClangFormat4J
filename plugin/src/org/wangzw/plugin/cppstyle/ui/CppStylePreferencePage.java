@@ -1,11 +1,11 @@
 package org.wangzw.plugin.cppstyle.ui;
 
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_PATH;
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_STYLE_PATH;
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.LABEL_CLANG_FORMAT_PATH;
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.LABEL_CLANG_FORMAT_STYLE_PATH;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.wangzw.plugin.cppstyle.CppStyle;
-import org.wangzw.plugin.cppstyle.EnvironmentVariableExpander;
+import org.wangzw.plugin.cppstyle.FilePathUtil;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -30,8 +30,14 @@ import org.wangzw.plugin.cppstyle.EnvironmentVariableExpander;
  */
 
 public class CppStylePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
     private FileFieldEditor clangFormatPath = null;
+
     private FileFieldEditor clangFormatStylePath = null;
+
+    private static String validClangFormatPath = null;
+
+    private static String validClangFormatStylePath = null;
 
     public CppStylePreferencePage() {
         super(GRID);
@@ -58,37 +64,43 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         super.propertyChange(event);
-
         if (event.getProperty().equals(FieldEditor.VALUE)) {
             String newValue = event.getNewValue().toString();
             if (event.getSource() == clangFormatPath) {
-                pathChange(LABEL_CLANG_FORMAT_PATH, newValue);
+                pathChange(LABEL_CLANG_FORMAT_PATH, newValue, FilePathUtil::isFileRunnable);
             }
             else if (event.getSource() == clangFormatStylePath) {
-                String expandEnvVar = EnvironmentVariableExpander.expandEnvVar(newValue);
-                if (!newValue.equals(expandEnvVar)) {
-                    newValue = expandEnvVar;
-                }
-                pathChange(LABEL_CLANG_FORMAT_STYLE_PATH, newValue);
+                pathChange(LABEL_CLANG_FORMAT_STYLE_PATH, newValue, FilePathUtil::fileExists);
             }
-
             checkState();
         }
     }
 
-    private boolean checkPathExist(String path) {
-        File file = new File(path);
-        return file.exists() && !file.isDirectory();
+    public static String getValidClangFormatPath() {
+        return validClangFormatPath;
     }
 
-    private void pathChange(String propertyLable, String newPath) {
-        if (!checkPathExist(newPath)) {
-            this.setValid(false);
-            this.setErrorMessage(propertyLable + " \"" + newPath + "\" does not exist");
-        }
-        else {
+    public static String getValidClangFormatStylePath() {
+        return validClangFormatStylePath;
+    }
+
+    private void pathChange(String propertyLable, String newPath, Predicate<? super String> predicate) {
+        List<String> newPathCandidates = FilePathUtil.resolvePaths(newPath);
+        Optional<String> validPath = newPathCandidates.stream().filter(predicate).findFirst();
+        boolean validCandidateExists = validPath.isPresent();
+        if (validCandidateExists) {
             this.setValid(true);
             this.setErrorMessage(null);
+            if (LABEL_CLANG_FORMAT_PATH.equals(propertyLable)) {
+                validClangFormatPath = validPath.get();
+            }
+            else if (LABEL_CLANG_FORMAT_STYLE_PATH.equals(propertyLable)) {
+                validClangFormatStylePath = validPath.get();
+            }
+        }
+        else {
+            this.setValid(false);
+            this.setErrorMessage(propertyLable + " None of the candidates exist \"" + newPath + "\"");
         }
     }
 
@@ -107,31 +119,8 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         return new FileFieldEditor(preferenceName, label, parentComposite) {
             @Override
             protected boolean checkState() {
-                String msg = null;
-
-                String path = EnvironmentVariableExpander.expandEnvVar(getTextControl().getText());
-                if (path != null) {
-                    path = path.trim();
-                }
-                else {
-                    path = ""; //$NON-NLS-1$
-                }
-                if (path.length() == 0) {
-                    if (!isEmptyStringAllowed()) {
-                        msg = getErrorMessage();
-                    }
-                }
-                else {
-                    File file = new File(path);
-                    if (file.isFile()) {
-                        if (true && !file.isAbsolute()) {
-                            msg = JFaceResources.getString("FileFieldEditor.errorMessage2"); //$NON-NLS-1$
-                        }
-                    }
-                    else {
-                        msg = getErrorMessage();
-                    }
-                }
+                String pathCandidates = getTextControl().getText();
+                String msg = checkPathCandidates(pathCandidates);
 
                 if (msg != null) { // error
                     showErrorMessage(msg);
@@ -147,6 +136,35 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
                     showErrorMessage(msg);
                 }
                 return false;
+            }
+
+            private String checkPathCandidates(String pathCandidates) {
+                String msg = null;
+                List<String> resolvedPathCandidates = FilePathUtil.resolvePaths(pathCandidates);
+                for (String candidate : resolvedPathCandidates) {
+                    if (candidate.isEmpty()) {
+                        if (!isEmptyStringAllowed()) {
+                            msg = getErrorMessage();
+                        }
+                    }
+                    else {
+                        File file = new File(candidate);
+                        if (file.isFile()) {
+                            if (!file.isAbsolute()) {
+                                msg = JFaceResources.getString("FileFieldEditor.errorMessage2"); //$NON-NLS-1$
+                            }
+                            // is valid
+                            else {
+                                msg = null;
+                                break;
+                            }
+                        }
+                        else {
+                            msg = getErrorMessage();
+                        }
+                    }
+                }
+                return msg;
             }
         };
     }

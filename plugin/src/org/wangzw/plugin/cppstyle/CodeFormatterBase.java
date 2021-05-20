@@ -1,12 +1,12 @@
 package org.wangzw.plugin.cppstyle;
 
-import static org.wangzw.plugin.cppstyle.replacement.Logger.logInfo;
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_PATH;
-import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.CLANG_FORMAT_STYLE_PATH;
+import static org.wangzw.plugin.cppstyle.replacement.Logger.*;
+import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.filesystem.URIUtil;
@@ -59,10 +59,55 @@ public abstract class CodeFormatterBase extends CodeFormatter {
 
     protected MessageConsoleStream err = null;
 
+    private String clangFormatPath;
+
+    private String clangFormatStylePath;
+
+    private boolean isClangFormatPathValid;
+
+    private boolean isClangFormatStylePathValid;
+
+    private String assumeFilenamePath;
+
+    private boolean isAssumeFilenamePathValid;
+
     public CodeFormatterBase() {
         super();
         CppStyleMessageConsole console = CppStyle.buildConsole();
         err = console.getErrorStream();
+
+        initClangFormatPath();
+        initClangFormatStylePath();
+        initAssumeFilenamePath();
+    }
+
+    private void initClangFormatPath() {
+        List<String> clangFormatPathCandidates = getClangFormatPathsFromPreferences();
+        for (String candidate : clangFormatPathCandidates) {
+            isClangFormatPathValid = checkClangFormat(candidate);
+            if (isClangFormatPathValid) {
+                clangFormatPath = candidate;
+                break;
+            }
+        }
+    }
+
+    private void initClangFormatStylePath() {
+        List<String> clangFormatStylePathCandidates = getClangFormatStylePathsFromPreferences();
+        for (String candidate : clangFormatStylePathCandidates) {
+            isClangFormatStylePathValid = FilePathUtil.fileExists(candidate);
+            if (isClangFormatStylePathValid) {
+                clangFormatStylePath = candidate;
+                break;
+            }
+        }
+    }
+
+    private void initAssumeFilenamePath() {
+        if (isClangFormatStylePathValid) {
+            assumeFilenamePath = stylePathToAssumeFilenamePath(clangFormatStylePath);
+            isAssumeFilenamePathValid = true;
+        }
     }
 
     @Override
@@ -80,27 +125,12 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     protected TextEdit format(String source, String path, IRegion[] regions) {
-        String clangFormatPath = getClangFormatPath();
-        if (checkClangFormat(clangFormatPath) == false) {
-            return null;
-        }
-
-        String confPath = getClangFormatConfigureFile(path);
-        if (confPath == null) {
-            err.println("Cannot find .clang-format or _clang-format configuration file under any level "
-                    + "parent directories of path (" + path + ").");
-            err.println("Not applying any formatting.");
-            return null;
-        }
-        else {
-            logInfo(String.format("Using style-file: %s", confPath));
-        }
-
-        return handleProcess(source, path, regions, clangFormatPath);
+        logInfo(String.format("Using style-file: %s", clangFormatStylePath));
+        return handleProcess(source, clangFormatPath, assumeFilenamePath, regions);
     }
 
     protected TextEdit handleProcess(
-            String source, String assumeFilenamePath, IRegion[] regions, String clangFormatPath) {
+            String source, String clangFormatPath, String assumeFilenamePath, IRegion[] regions) {
         MultiTextEdit edit = null;
         try {
             ProcessHandler processHandler = createProcessHandler(source);
@@ -167,16 +197,17 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         }
     }
 
-    protected String getClangFormatPath() {
-        String clangFormatPath = CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_PATH);
-        String resolvedClangFormatPath = EnvironmentVariableExpander.expandEnvVar(clangFormatPath);
-        return resolvedClangFormatPath;
+    protected List<String> getClangFormatPathsFromPreferences() {
+        return getResolvedPreferenceValues(CLANG_FORMAT_PATH);
     }
 
-    protected String getClangFormatStylePath() {
-        String stylePath = CppStyle.getDefault().getPreferenceStore().getString(CLANG_FORMAT_STYLE_PATH);
-        String resolvedStylePath = EnvironmentVariableExpander.expandEnvVar(stylePath);
-        return resolvedStylePath;
+    protected List<String> getClangFormatStylePathsFromPreferences() {
+        return getResolvedPreferenceValues(CLANG_FORMAT_STYLE_PATH);
+    }
+
+    private List<String> getResolvedPreferenceValues(String preferenceName) {
+        String semicolonSeperatedPaths = CppStyle.getDefault().getPreferenceStore().getString(preferenceName);
+        return FilePathUtil.resolvePaths(semicolonSeperatedPaths);
     }
 
     private static IPath getSourceFilePathFromEditorInput(IEditorInput editorInput) {
@@ -205,29 +236,6 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     protected abstract ProcessHandler createProcessHandler(final String source);
-
-    protected String getClangFormatConfigureFile(String path) {
-        File file = new File(path);
-
-        while (file != null) {
-            File dir = file.getParentFile();
-            if (dir != null) {
-                File conf = new File(dir, ".clang-format");
-                if (conf.exists()) {
-                    return conf.getAbsolutePath();
-                }
-
-                conf = new File(dir, "_clang-format");
-                if (conf.exists()) {
-                    return conf.getAbsolutePath();
-                }
-            }
-
-            file = dir;
-        }
-
-        return null;
-    }
 
     /**
      * Implementation from DefaultCodeFormatter
@@ -275,25 +283,17 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     protected String getAssumeFilenamePath() {
-        String assumeFilenamePath = getClangFormatStylePath();
-
-        if (fileExists(assumeFilenamePath)) {
-            assumeFilenamePath = stylePathToAssumeFilenamePath(assumeFilenamePath);
+        if (isAssumeFilenamePathValid) {
             return assumeFilenamePath;
         }
 
         assumeFilenamePath = getJavaFilePathFromActiveEditor();
-        if (fileExists(assumeFilenamePath)) {
+        if (FilePathUtil.fileExists(assumeFilenamePath)) {
             return assumeFilenamePath;
         }
 
         assumeFilenamePath = useWorkspaceFallback();
         return assumeFilenamePath;
-    }
-
-    private boolean fileExists(String clangFormatStylePath) {
-        return clangFormatStylePath != null && !clangFormatStylePath.isEmpty()
-                && new File(clangFormatStylePath).exists();
     }
 
     private String stylePathToAssumeFilenamePath(String clangFormatStylePath) {
