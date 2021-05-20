@@ -63,44 +63,46 @@ public abstract class CodeFormatterBase extends CodeFormatter {
 
     private String clangFormatStylePath;
 
-    private boolean isClangFormatPathValid;
+    private String assumeFilenamePath;
 
     private boolean isClangFormatStylePathValid;
 
-    private String assumeFilenamePath;
-
     private boolean isAssumeFilenamePathValid;
+
+    private ClangPathHelper clangPathHelper;
 
     public CodeFormatterBase() {
         super();
         CppStyleMessageConsole console = CppStyle.buildConsole();
         err = console.getErrorStream();
 
+        clangPathHelper = new ClangPathHelper();
         initClangFormatPath();
         initClangFormatStylePath();
         initAssumeFilenamePath();
     }
 
     private void initClangFormatPath() {
-        List<String> clangFormatPathCandidates = getClangFormatPathsFromPreferences();
-        for (String candidate : clangFormatPathCandidates) {
-            isClangFormatPathValid = checkClangFormat(candidate);
-            if (isClangFormatPathValid) {
-                clangFormatPath = candidate;
-                break;
+        if (clangPathHelper.getCachedClangFormatPath() == null) {
+            List<String> candidates = getClangFormatPathsFromPreferences();
+            boolean validPathPresent = clangPathHelper.getFirstValidClangFormatPath(candidates).isPresent();
+            if (!validPathPresent) {
+                logError("No valid clang-format executable path found");
             }
         }
+        clangFormatPath = clangPathHelper.getCachedClangFormatPath();
     }
 
     private void initClangFormatStylePath() {
-        List<String> clangFormatStylePathCandidates = getClangFormatStylePathsFromPreferences();
-        for (String candidate : clangFormatStylePathCandidates) {
-            isClangFormatStylePathValid = FilePathUtil.fileExists(candidate);
-            if (isClangFormatStylePathValid) {
-                clangFormatStylePath = candidate;
-                break;
+        if (clangPathHelper.getCachedClangFormatStylePath() == null) {
+            List<String> candidates = getClangFormatStylePathsFromPreferences();
+            boolean validPathPresent = clangPathHelper.getFirstValidClangFormatStylePath(candidates).isPresent();
+            if (!validPathPresent) {
+                logInfo("No valid .clang-format style path found");
             }
         }
+        clangFormatStylePath = clangPathHelper.getCachedClangFormatStylePath();
+        isClangFormatStylePathValid = clangFormatStylePath != null;
     }
 
     private void initAssumeFilenamePath() {
@@ -125,7 +127,7 @@ public abstract class CodeFormatterBase extends CodeFormatter {
     }
 
     protected TextEdit format(String source, String path, IRegion[] regions) {
-        logInfo(String.format("Using style-file: %s", clangFormatStylePath));
+        logInfo(String.format("Using clang-format: %s with style-file: %s", clangFormatPath, clangFormatStylePath));
         return handleProcess(source, clangFormatPath, assumeFilenamePath, regions);
     }
 
@@ -261,31 +263,11 @@ public abstract class CodeFormatterBase extends CodeFormatter {
         }
     }
 
-    public boolean checkClangFormat(String clangformat) {
-        if (clangformat == null) {
-            err.println("clang-format is not specified.");
-            return false;
-        }
-
-        File file = new File(clangformat);
-
-        if (!file.exists()) {
-            err.println("clang-format (" + clangformat + ") does not exist.");
-            return false;
-        }
-
-        if (!file.canExecute()) {
-            err.println("clang-format (" + clangformat + ") is not executable.");
-            return false;
-        }
-
-        return true;
-    }
-
     protected String getAssumeFilenamePath() {
         if (isAssumeFilenamePathValid) {
             return assumeFilenamePath;
         }
+        logInfo("Trying to find .clang-format style");
 
         assumeFilenamePath = getJavaFilePathFromActiveEditor();
         if (FilePathUtil.fileExists(assumeFilenamePath)) {

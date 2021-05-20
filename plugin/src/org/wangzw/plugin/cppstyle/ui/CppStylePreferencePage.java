@@ -5,7 +5,6 @@ import static org.wangzw.plugin.cppstyle.ui.CppStyleConstants.*;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -15,6 +14,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.wangzw.plugin.cppstyle.ClangPathHelper;
 import org.wangzw.plugin.cppstyle.CppStyle;
 import org.wangzw.plugin.cppstyle.FilePathUtil;
 
@@ -35,13 +35,12 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
 
     private FileFieldEditor clangFormatStylePath = null;
 
-    private static String validClangFormatPath = null;
-
-    private static String validClangFormatStylePath = null;
+    private ClangPathHelper clangPathHelper;
 
     public CppStylePreferencePage() {
         super(GRID);
         setPreferenceStore(CppStyle.getDefault().getPreferenceStore());
+        clangPathHelper = new ClangPathHelper();
     }
 
     /**
@@ -67,36 +66,28 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
         if (event.getProperty().equals(FieldEditor.VALUE)) {
             String newValue = event.getNewValue().toString();
             if (event.getSource() == clangFormatPath) {
-                pathChange(LABEL_CLANG_FORMAT_PATH, newValue, FilePathUtil::isFileRunnable);
+                pathChange(LABEL_CLANG_FORMAT_PATH, newValue);
             }
             else if (event.getSource() == clangFormatStylePath) {
-                pathChange(LABEL_CLANG_FORMAT_STYLE_PATH, newValue, FilePathUtil::fileExists);
+                pathChange(LABEL_CLANG_FORMAT_STYLE_PATH, newValue);
             }
             checkState();
         }
     }
 
-    public static String getValidClangFormatPath() {
-        return validClangFormatPath;
-    }
-
-    public static String getValidClangFormatStylePath() {
-        return validClangFormatStylePath;
-    }
-
-    private void pathChange(String propertyLable, String newPath, Predicate<? super String> predicate) {
+    private void pathChange(String propertyLable, String newPath) {
         List<String> newPathCandidates = FilePathUtil.resolvePaths(newPath);
-        Optional<String> validPath = newPathCandidates.stream().filter(predicate).findFirst();
+        Optional<String> validPath = Optional.empty();
+        if (LABEL_CLANG_FORMAT_PATH.equals(propertyLable)) {
+            validPath = clangPathHelper.getFirstValidClangFormatPath(newPathCandidates);
+        }
+        else if (LABEL_CLANG_FORMAT_STYLE_PATH.equals(propertyLable)) {
+            validPath = clangPathHelper.getFirstValidClangFormatStylePath(newPathCandidates);
+        }
         boolean validCandidateExists = validPath.isPresent();
         if (validCandidateExists) {
             this.setValid(true);
             this.setErrorMessage(null);
-            if (LABEL_CLANG_FORMAT_PATH.equals(propertyLable)) {
-                validClangFormatPath = validPath.get();
-            }
-            else if (LABEL_CLANG_FORMAT_STYLE_PATH.equals(propertyLable)) {
-                validClangFormatStylePath = validPath.get();
-            }
         }
         else {
             this.setValid(false);
