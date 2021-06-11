@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.wangzw.clang-format4j.feature_1.0.0.9.jar" id="org.wangzw.clang-format4j.feature" version="1.0.0.9">
+   <feature url="features/org.wangzw.clang-format4j.feature_1.0.0.10.jar" id="org.wangzw.clang-format4j.feature" version="1.0.0.10">
       <category name="org.wangzw.clang-format4j.category"/>
    </feature>
    <category-def name="org.wangzw.clang-format4j.category" label="ClangFormat4J"/>
