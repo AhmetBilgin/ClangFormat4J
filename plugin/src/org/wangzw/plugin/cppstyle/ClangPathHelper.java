@@ -1,5 +1,7 @@
 package org.wangzw.plugin.cppstyle;
 
+import static org.wangzw.plugin.cppstyle.replacement.Logger.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -18,7 +20,8 @@ public class ClangPathHelper {
     public Optional<String> getFirstValidClangFormatPath(List<String> pathCandidates) {
         Optional<String> validPath = findFirstValidPath(pathCandidates, FilePathUtil::isFileRunnable);
         if (validPath.isPresent()) {
-            cachedValidClangFormatPath = validPath.get();
+            cachedValidClangFormatPath = FilePathUtil.toNormalizedAbsolutePath(validPath.get());
+            logInfo("cachedValidClangFormatPath: " + cachedValidClangFormatPath);
         }
         return validPath;
     }
@@ -31,7 +34,8 @@ public class ClangPathHelper {
     public Optional<String> getFirstValidClangFormatStylePath(List<String> pathCandidates) {
         Optional<String> validPath = findFirstValidPath(pathCandidates, FilePathUtil::fileExists);
         if (validPath.isPresent()) {
-            cachedValidClangFormatStylePath = validPath.get();
+            cachedValidClangFormatStylePath = FilePathUtil.toNormalizedAbsolutePath(validPath.get());
+            logInfo("cachedValidClangFormatStylePath: " + cachedValidClangFormatStylePath);
         }
         return validPath;
     }

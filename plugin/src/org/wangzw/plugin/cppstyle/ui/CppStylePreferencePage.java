@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -140,15 +139,10 @@ public class CppStylePreferencePage extends FieldEditorPreferencePage implements
                     }
                     else {
                         File file = new File(candidate);
-                        if (file.isFile()) {
-                            if (!file.isAbsolute()) {
-                                msg = JFaceResources.getString("FileFieldEditor.errorMessage2"); //$NON-NLS-1$
-                            }
+                        if (file.exists()) {
                             // is valid
-                            else {
-                                msg = null;
-                                break;
-                            }
+                            msg = null;
+                            break;
                         }
                         else {
                             msg = getErrorMessage();

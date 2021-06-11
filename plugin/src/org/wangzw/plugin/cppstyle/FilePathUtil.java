@@ -1,6 +1,7 @@
 package org.wangzw.plugin.cppstyle;
 
 import java.io.File;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,4 +26,8 @@ public class FilePathUtil {
             }
         }
         return resolvedPaths;
+    }
+
+    public static String toNormalizedAbsolutePath(String path) {
+        return FileSystems.getDefault().getPath(path).normalize().toAbsolutePath().toString();
     }}
