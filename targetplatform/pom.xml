@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>clang-format4j</groupId>
 		<artifactId>clang-format4j-parent</artifactId>
-		<version>1.0.0.10</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
 	<name>targetplatform</name>
 	<artifactId>targetplatform</artifactId>
 	<packaging>eclipse-target-definition</packaging>
-	<version>4.12</version>
+	<version>4.20</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
