@@ -6,15 +6,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>clang-format4j</groupId>
 	<artifactId>clang-format4j-parent</artifactId>
-	<version>1.0.0.10</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<tycho.version>0.25.0</tycho.version>
-		<targetplatform.version>4.12</targetplatform.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<tycho.version>2.3.0</tycho.version>
+		<targetplatform.version>4.20</targetplatform.version>
 	</properties>
 
 	<modules>
@@ -100,21 +100,21 @@
 			<activation>
 				<property>
 					<!-- use -Dproperty=value after mvn goal to activate -->
-					<name>deploy=</name>
+					<name>deploy</name>
 					<value>true</value>
 				</property>
 			</activation>
 
 			<distributionManagement>
 				<repository>
-					<id>update</id>
+					<id>target</id>
 					<!-- use -Dproperty=value after mvn goal to define repository url or
 						set it here directly -->
 					<url>${deploy.url.release}</url>
 				</repository>
 
 				<snapshotRepository>
-					<id>update.snapshot</id>
+					<id>target.snapshot</id>
 					<!-- use -Dproperty=value after mvn goal to define repository url or
 						set it here directly -->
 					<url>${deploy.url.snapshot}</url>
