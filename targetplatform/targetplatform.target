@@ -4,13 +4,13 @@
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <repository location="https://download.eclipse.org/releases/2021-06/"/>
-	<unit id="org.eclipse.jdt.source.feature.group" version="3.18.800.v20210526-2310"/>
-	<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.0.v20210527-0259"/>
-	<unit id="org.eclipse.rcp.source.feature.group" version="4.20.0.v20210527-0259"/>
-	<unit id="org.eclipse.platform.source.feature.group" version="4.20.0.v20210527-0259"/>
+	<unit id="org.eclipse.jdt.source.feature.group" version="3.18.800.v20210611-1600"/>
+	<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.0.v20210611-1654"/>
+	<unit id="org.eclipse.rcp.source.feature.group" version="4.20.0.v20210611-1600"/>
+	<unit id="org.eclipse.platform.source.feature.group" version="4.20.0.v20210611-1600"/>
 	<unit id="org.eclipse.emf.sdk.feature.group" version="2.26.0.v20210506-1425"/>
-	<unit id="org.eclipse.rcp.feature.group" version="4.20.0.v20210527-0259"/>
-	<unit id="org.eclipse.platform.feature.group" version="4.20.0.v20210527-0259"/>
+	<unit id="org.eclipse.rcp.feature.group" version="4.20.0.v20210611-1600"/>
+	<unit id="org.eclipse.platform.feature.group" version="4.20.0.v20210611-1600"/>
 	<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="4.20.0.v20210427-1802"/>
 </location>
 </locations>
