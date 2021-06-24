@@ -2,7 +2,7 @@
 <feature
       id="org.wangzw.clang-format4j.feature"
       label="ClangFormat4J"
-      version="1.0.1"
+      version="1.0.2"
       provider-name="Zhanwei Wang">
 
    <description>
@@ -45,7 +45,7 @@ SOFTWARE.
          id="org.wangzw.clang-format4j"
          download-size="0"
          install-size="0"
-         version="1.0.1"
+         version="1.0.2"
          unpack="false"/>
 
 </feature>
