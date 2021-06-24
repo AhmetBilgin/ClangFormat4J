@@ -6,7 +6,5 @@
     </properties>
     <children size='3'>
         <child location='http://smd-server:8989/nexus/content/repositories/p2.updates-4.20/clang-format4j/update/1.0.1/update-1.0.1.zip-unzip'/>
-        <child location='http://smd-server:8989/nexus/content/repositories/p2.updates-4.20/clang-format4j/update/1.0.2/update-1.0.2.zip-unzip/'/>
-        <child location='http://smd-server:8989/nexus/content/repositories/p2.updates-4.20/clang-format4j/update/1.0.3/update-1.0.3.zip-unzip/'/>
     </children>
 </repository>
