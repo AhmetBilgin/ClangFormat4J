@@ -33,8 +33,10 @@ public class EnvironmentVariableExpander {
                 resolvedEnvVar = System.getProperty(envVar, "");
             }
             resolvedEnvVar += toExpand.substring(toExpand.lastIndexOf(END_TAG_ENVIRONMENT_VAR) + 1, toExpand.length());
-            File file = new File(resolvedEnvVar);
-            resolvedEnvVar = file.getAbsolutePath();
+            if (!resolvedEnvVar.isEmpty()) {
+                File file = new File(resolvedEnvVar);
+                resolvedEnvVar = file.getAbsolutePath();
+            }
         }
         else {
             resolvedEnvVar = toExpand;
