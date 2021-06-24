@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeMetadataRepository version='1.0.0'?>
+<repository name='ClangFormat4J Releases Repository' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
+    <properties size='1'>
+        <property name='p2.atomic.composite.loading' value='true'/>
+    </properties>
+    <children size='3'>
+        <child location='http://smd-server:8989/nexus/content/repositories/p2.updates-4.20/clang-format4j/update/1.0.1/update-1.0.1.zip-unzip'/>
+        <child location='http://smd-server:8989/nexus/content/repositories/p2.updates-4.20/clang-format4j/update/1.0.2/update-1.0.2.zip-unzip/'/>
+        <child location='http://smd-server:8989/nexus/content/repositories/p2.updates-4.20/clang-format4j/update/1.0.3/update-1.0.3.zip-unzip/'/>
+    </children>
+</repository>

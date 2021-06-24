@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>clang-format4j</groupId>
+		<artifactId>clang-format4j-parent</artifactId>
+		<version>1.0.3</version>
+	</parent>
+	<artifactId>updates</artifactId>
+	<version>latest</version>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>composite-repo</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptors>
+								<descriptor>${project.basedir}/resources/archive-assembly.xml</descriptor>
+							</descriptors>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.artifactId}</finalName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<property>
+					<!-- use -Dproperty=value after mvn goal to activate -->
+					<name>deploy=</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
