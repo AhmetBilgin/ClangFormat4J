@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.wangzw.clang-format4j.feature">
+      <category name="org.wangzw.clang-format4j.category"/>
+   </feature>
+   <category-def name="org.wangzw.clang-format4j.category" label="ClangFormat4J">
+      <description>
+         ClangFormat4J Eclipse Plugin
+      </description>
+   </category-def>
+</site>

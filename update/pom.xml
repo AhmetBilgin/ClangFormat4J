@@ -8,7 +8,7 @@
     <version>1.0.1</version>
   </parent>
   <artifactId>update</artifactId>
-  <packaging>eclipse-update-site</packaging>
+  <packaging>eclipse-repository</packaging>
 
   <build>
   	<plugins>
@@ -22,4 +22,28 @@
         </plugin>
   	</plugins>
   </build>
+
+	<profiles>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<property>
+					<!-- use -Dproperty=value after mvn goal to activate -->
+					<name>deploy=</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
